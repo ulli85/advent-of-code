@@ -1,25 +1,15 @@
-def check_update(rules: dict, updatestr: str) -> bool:
+def check_update(rules: dict, updatestr: str, fix_one_error: bool) -> tuple:
     update = updatestr.split(',')
     if len(update) > 1:  # update musi byt delsi jak jedno cislo
         for i in range(1, len(update)):
             for j in range(0, i):
                 if update[i] in rules and update[j] in rules[update[i]]:
-                    return False
-    return True
-
-
-def fix_one_error(rules: dict, updatestr: str) -> str:
-    update = updatestr.split(',')
-    if len(update) > 1:  # update musi byt delsi jak jedno cislo
-        for i in range(1, len(update)):
-            for j in range(0, i):
-                if update[i] in rules and update[j] in rules[update[i]]:
-                    pom = update[i]
-                    update[i] = update[j]
-                    update[j] = pom
-                    return ','.join(update)
-    return updatestr
-
+                    if fix_one_error:
+                        pom = update[i]
+                        update[i] = update[j]
+                        update[j] = pom
+                    return False, ','.join(update)
+    return True, updatestr
 
 def get_middle_number(updatestr: str) -> int:
     numbers = (updatestr.split(','))
@@ -45,9 +35,12 @@ for line in lines:
 
 result = 0
 for update in lines[-len(lines) + idx:]:
-    if check_update(rules, update):
+    check_res = check_update(rules, update, False)
+    if check_res[0]:
         continue
-    while not check_update(rules, update):
-        update = fix_one_error(rules, update)
-    result += get_middle_number(update)
+
+    check_res = check_update(rules, update, True)
+    while not check_res[0]:
+        check_res = check_update(rules, check_res[1], True)
+    result += get_middle_number(check_res[1])
 print(result)

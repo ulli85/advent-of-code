@@ -2,7 +2,7 @@ def prepare_grid_pos_agent(lines: list) -> tuple:
     agent_pos = []
     grid = []
     for i in range(len(lines)):
-        grid.append([char for char in lines[i]])
+        grid.append([char for char in lines[i]]) # ze stringu udelam pole charu
         for j in (range(len(lines[0]))):
             if lines[i][j] in directions:
                 agent_pos = [i, j]
@@ -13,10 +13,6 @@ def outside_grid(lines: list, next_y: int, next_x) -> bool:
     if next_y == -1 or next_y == len(lines) or next_x == -1 or next_x == len(lines[0]):
         return True
     return False
-
-
-def pos_equals(pos1: list, pos2: list) -> bool:
-    return pos1[0] == pos2[0] and pos1[1] == pos2[1]
 
 
 f = open("aoc2024-6-2-input.txt", "r")
@@ -38,7 +34,6 @@ for y in range(len(grid)):
             start_pos = actual_pos
             visited_cnt = 1
             while True:
-                #print(np.matrix(grid))
                 direction = grid[actual_pos[0]][actual_pos[1]]
                 next_y = actual_pos[0] + directions[direction][0]
                 next_x = actual_pos[1] + directions[direction][1]

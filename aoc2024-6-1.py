@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def prepare_grid_pos_agent(lines: list) -> tuple:
     agent_pos = []
     grid = []
@@ -22,48 +19,50 @@ def pos_equals(pos1: list, pos2: list) -> bool:
     return pos1[0] == pos2[0] and pos1[1] == pos2[1]
 
 
-f = open("aoc2024-6-1-input.txt", "r")
+f = open("aoc2024-6-2-input.txt", "r")
 content = f.read()
 lines = content.splitlines()
-
 directions = {'>': [0, 1], '^': [-1, 0], 'v': [1, 0], '<': [0, -1]}
 rotations = {'>': 'v', '^': '>', 'v': '<', '<': '^'}
-
 preparation = prepare_grid_pos_agent(lines)
 grid = preparation[1]
 first_direction = grid[preparation[0][0]][preparation[0][1]]
 solution_cnt = 0
 for y in range(len(grid)):
     for x in range(len(grid[0])):
-        if grid[y][x] == '.' or grid[y][x] == 'X':
+        if grid[y][x] == '.':
             grid[y][x] = 'O'
             actual_pos = preparation[0]
+            path = {}
             grid[actual_pos[0]][actual_pos[1]] = first_direction
             start_pos = actual_pos
             visited_cnt = 1
-            while not (visited_cnt > 1 and pos_equals(start_pos, actual_pos)):
-                print(np.matrix(grid))
-                print(actual_pos)
+            while True:
+                #print(np.matrix(grid))
                 direction = grid[actual_pos[0]][actual_pos[1]]
                 next_y = actual_pos[0] + directions[direction][0]
                 next_x = actual_pos[1] + directions[direction][1]
-                if outside_grid(grid, next_y, next_x) or pos_equals(start_pos, [next_y, next_x]):
+                if outside_grid(grid, next_y, next_x):
+                    grid[actual_pos[0]][actual_pos[1]] = '.'
                     break
-                next_object = grid[next_y][next_x]
 
-                if next_object == '.' or next_object == 'X':
-                    pom = grid[actual_pos[0]][actual_pos[1]]
-                    grid[actual_pos[0]][actual_pos[1]] = 'X'
+                # pokud naleznu opakujici se bod cesty ve stejnem smeru, pak jsem v cyklu a mohu ukoncit algoritmus
+                unique = f"{next_y}-{next_x}-{direction}"
+                if unique in path:
+                    grid[actual_pos[0]][actual_pos[1]] = '.'
+                    solution_cnt += 1
+                    break
+                else:
+                    path[unique] = ''
+                next_object = grid[next_y][next_x]
+                if next_object == '.':
                     grid[next_y][next_x] = direction
+                    grid[actual_pos[0]][actual_pos[1]] = '.'
                     actual_pos = [next_y, next_x]
                     if next_object == '.':
                         visited_cnt += 1
                 elif next_object == '#' or next_object == 'O':
                     grid[actual_pos[0]][actual_pos[1]] = rotations[direction]
-            if pos_equals(start_pos, actual_pos):
-                solution_cnt += 1
-                print('------------------')
             if grid[y][x] == 'O':
                 grid[y][x] = '.'
-print(visited_cnt)
 print(solution_cnt)

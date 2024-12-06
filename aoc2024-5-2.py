@@ -1,3 +1,6 @@
+from collections import Counter
+# https://www.youtube.com/watch?v=ym1ae-vBy6g
+
 def check_update(rules: dict, updatestr: str, fix_one_error: bool) -> tuple:
     update = updatestr.split(',')
     if len(update) > 1:  # update musi byt delsi jak jedno cislo

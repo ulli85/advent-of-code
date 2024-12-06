@@ -8,12 +8,10 @@ def prepare_grid_pos_agent(lines: list) -> tuple:
                 agent_pos = [i, j]
     return agent_pos, grid
 
-
 def outside_grid(lines: list, next_y: int, next_x) -> bool:
     if next_y == -1 or next_y == len(lines) or next_x == -1 or next_x == len(lines[0]):
         return True
     return False
-
 
 f = open("aoc2024-6-2-input.txt", "r")
 content = f.read()

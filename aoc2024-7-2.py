@@ -23,7 +23,7 @@ class TreeRoot:
             nodes.reverse()
             for node in nodes:
                 solution += node.operator + str(node.operand)
-            return f"{self.result} = {solution}"
+            return f"{self.result_of_equation} = {solution}"
         return 'Solution not found yet'
 
 

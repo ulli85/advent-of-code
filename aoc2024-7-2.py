@@ -4,7 +4,6 @@ class TreeRoot:
         self.operands = operands
         self.childrens = []
         self.actual_value = operands[0]
-        self.operation = str(self.actual_value) + ' '
         self.solution_found = False
         self.leaf_with_solution: TreeNode = None
 

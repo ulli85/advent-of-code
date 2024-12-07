@@ -37,7 +37,7 @@ class TreeNode:
         self.actual_value = self.__get_actual_value(parent_value, operator)
         self.operand = operands[0]
         self.childrens = []
-        self.solution_found = self.actual_value == result_of_eqation
+        self.solution_found = self.actual_value == result_of_equation
         self.__build_children()
 
     def __get_actual_value(self, parent_value: int, operator: str) -> int:
@@ -48,10 +48,10 @@ class TreeNode:
     def __build_children(self):
         if TreeNode.root.solution_found:
             return
-        if self.actual_value == result_of_eqation and len(self.operands) == 1:
+        if self.actual_value == result_of_equation and len(self.operands) == 1:
             TreeNode.root.solution_found = True
             TreeNode.root.leaf_with_solution = self
-        elif len(self.operands) > 1 and self.actual_value <= result_of_eqation:
+        elif len(self.operands) > 1 and self.actual_value <= result_of_equation:
             add_children(self)
 
 
@@ -68,10 +68,10 @@ lines = content.splitlines()
 solution = 0
 for line in lines:
     data = line.split(':')
-    result_of_eqation = int(data[0])
+    result_of_equation = int(data[0])
     operands = [int(x) for x in data[1].strip().split(' ')]
-    tree = TreeRoot(result_of_eqation, operands).build_tree()
+    tree = TreeRoot(result_of_equation, operands).build_tree()
     if tree.solution_found:
         print(tree.get_solution_of_equation())
-        solution += result_of_eqation
+        solution += result_of_equation
 print(solution)

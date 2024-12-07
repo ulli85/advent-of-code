@@ -14,9 +14,6 @@ class TreeRoot:
         self.children_right = TreeNode('*', self, self.actual_value, child_operands)
         return self
 
-    def is_solution_found(self, solution_found: bool) -> bool:
-        self.solution_found = solution_found
-
 
 class TreeNode:
     def __init__(self, operator, parent, parent_value, operands: list[int]):
@@ -49,7 +46,7 @@ class TreeNode:
         else:
             print(f"No operands left. Result: {result_of_eqation}, Actual value: {self.actual_value}")
 
-    def __get_tree_root(self)-> TreeRoot:
+    def __get_tree_root(self) -> TreeRoot:
         node = self
         while type(node) is TreeNode:
             node = node.parent

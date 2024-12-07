@@ -1,6 +1,6 @@
 class TreeRoot:
-    def __init__(self, result, operands):
-        self.result = result
+    def __init__(self, result_of_equation, operands):
+        self.result_of_equation = result_of_equation
         self.operands = operands
         self.childrens = []
         self.actual_value = operands[0]
@@ -37,7 +37,7 @@ class TreeNode:
         self.actual_value = self.__get_actual_value(parent_value, operator)
         self.operand = operands[0]
         self.childrens = []
-        self.solution_found = self.actual_value == result_of_equation
+        self.solution_found = self.actual_value == TreeNode.root.result_of_equation
         self.__build_children()
 
     def __get_actual_value(self, parent_value: int, operator: str) -> int:
@@ -48,10 +48,10 @@ class TreeNode:
     def __build_children(self):
         if TreeNode.root.solution_found:
             return
-        if self.actual_value == result_of_equation and len(self.operands) == 1:
+        if self.actual_value == TreeNode.root.result_of_equation and len(self.operands) == 1:
             TreeNode.root.solution_found = True
             TreeNode.root.leaf_with_solution = self
-        elif len(self.operands) > 1 and self.actual_value <= result_of_equation:
+        elif len(self.operands) > 1 and self.actual_value <= TreeNode.root.result_of_equation:
             add_children(self)
 
 

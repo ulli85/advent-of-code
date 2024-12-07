@@ -35,7 +35,7 @@ class TreeNode:
         self.parent = parent
         self.operand = operands[0]
         self.actual_value = self.apply_operator(parent_value)
-        self.childrens = []
+        self.children = []
         self.solution_found = self.actual_value == TreeNode.root.result_of_equation
         self.__build_children(operands)
 
@@ -57,9 +57,9 @@ class TreeNode:
 
 def add_children(node: TreeRoot | TreeNode, operands: list[int]):
     child_operands = operands[1:]
-    node.childrens.append(TreeNode('*', node, node.actual_value, child_operands))
-    node.childrens.append(TreeNode('||', node, node.actual_value, child_operands))
-    node.childrens.append(TreeNode('+', node, node.actual_value, child_operands))
+    node.children.append(TreeNode('*', node, node.actual_value, child_operands))
+    node.children.append(TreeNode('||', node, node.actual_value, child_operands))
+    node.children.append(TreeNode('+', node, node.actual_value, child_operands))
 
 
 f = open("aoc2024-7-1-input.txt", "r")

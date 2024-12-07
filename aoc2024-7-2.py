@@ -8,6 +8,7 @@ class TreeRoot:
         self.solution_found = False
 
     def build_tree(self):
+        TreeNode.root = self
         child_operands = self.operands[1:]
         self.childrens.append(TreeNode('*', self, self.actual_value, child_operands))
         self.childrens.append(TreeNode('||', self, self.actual_value, child_operands))
@@ -16,6 +17,7 @@ class TreeRoot:
 
 
 class TreeNode:
+    root: TreeRoot
     def __init__(self, operator, parent, parent_value, operands: list[int]):
         self.operator = operator
         self.parent = parent
@@ -32,10 +34,10 @@ class TreeNode:
         return int(eval(f"{parent_value} {operator} {self.operands[0]}"))
 
     def __build_children(self):
-        if self.__get_tree_root().solution_found:
+        if TreeNode.root.solution_found:
             return
         if self.actual_value == result_of_eqation and len(self.operands) == 1:
-            self.__propagate_solution_found_to_root()
+            TreeNode.root.solution_found = True
             #print(f"Solution found: {self.__get_equation_as_string()} == {result_of_eqation}")
         elif len(self.operands) > 1 and self.actual_value <= result_of_eqation:
             child_operands = self.operands[1:]
@@ -43,25 +45,13 @@ class TreeNode:
             self.childrens.append(TreeNode('*', self, self.actual_value, child_operands))
             self.childrens.append(TreeNode('+', self, self.actual_value, child_operands))
 
-    def __get_tree_root(self) -> TreeRoot:
-        node = self
-        while type(node) is TreeNode:
-            node = node.parent
-        return node
-
-    def __propagate_solution_found_to_root(self):
-        root = self.__get_tree_root()
-        root.solution_found = True
-
     def __get_equation_as_string(self) -> str:
         node = self
         nodes: list[TreeNode] = []
-        while type(node) is TreeNode:
+        while node != TreeNode.root:
             nodes.append(node)
             node = node.parent
-        solution = ''
-        if type(node) is TreeRoot:
-            solution += str(node.actual_value)
+        solution = str(TreeNode.root.actual_value)
         nodes.reverse()
         for node in nodes:
             solution += node.operator + str(node.operand)

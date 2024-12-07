@@ -34,27 +34,28 @@ class TreeNode:
         self.operator = operator
         self.parent = parent
         self.operand = operands[0]
-        self.actual_value = self.__get_actual_value(parent_value, operator)
+        self.actual_value = self.apply_operator(parent_value)
         self.childrens = []
         self.solution_found = self.actual_value == TreeNode.root.result_of_equation
         self.__build_children(operands)
 
-    def __get_actual_value(self, parent_value: int, operator: str) -> int:
+    def apply_operator(self, parent_value) -> int:
         if self.operator == '||':
             return int(str(parent_value) + str(self.operand))
-        return int(eval(f"{parent_value} {operator} {self.operand}"))
+        return int(eval(f"{parent_value} {self.operator} {self.operand}"))
 
-    def __build_children(self, operands:list[int]):
-        if TreeNode.root.solution_found:
+    def __build_children(self, operands: list[int]):
+        root = TreeNode.root
+        if root.solution_found:
             return
-        if self.actual_value == TreeNode.root.result_of_equation and len(operands) == 1:
-            TreeNode.root.solution_found = True
-            TreeNode.root.leaf_with_solution = self
-        elif len(operands) > 1 and self.actual_value <= TreeNode.root.result_of_equation:
+        if self.actual_value == root.result_of_equation and len(operands) == 1:
+            root.solution_found = True
+            root.leaf_with_solution = self
+        elif len(operands) > 1 and self.actual_value <= root.result_of_equation:
             add_children(self, operands)
 
 
-def add_children(node: TreeRoot | TreeNode, operands:list[int]):
+def add_children(node: TreeRoot | TreeNode, operands: list[int]):
     child_operands = operands[1:]
     node.childrens.append(TreeNode('*', node, node.actual_value, child_operands))
     node.childrens.append(TreeNode('||', node, node.actual_value, child_operands))

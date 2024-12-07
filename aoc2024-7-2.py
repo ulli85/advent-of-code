@@ -9,7 +9,7 @@ class TreeRoot:
 
     def build_tree(self):
         TreeNode.root = self
-        add_children(self)
+        add_children(self, self.operands)
         return self
 
     def get_solution_of_equation(self) -> str:
@@ -33,30 +33,29 @@ class TreeNode:
     def __init__(self, operator, parent, parent_value, operands: list[int]):
         self.operator = operator
         self.parent = parent
-        self.operands = operands
-        self.actual_value = self.__get_actual_value(parent_value, operator)
         self.operand = operands[0]
+        self.actual_value = self.__get_actual_value(parent_value, operator)
         self.childrens = []
         self.solution_found = self.actual_value == TreeNode.root.result_of_equation
-        self.__build_children()
+        self.__build_children(operands)
 
     def __get_actual_value(self, parent_value: int, operator: str) -> int:
         if self.operator == '||':
-            return int(str(parent_value) + str(self.operands[0]))
-        return int(eval(f"{parent_value} {operator} {self.operands[0]}"))
+            return int(str(parent_value) + str(self.operand))
+        return int(eval(f"{parent_value} {operator} {self.operand}"))
 
-    def __build_children(self):
+    def __build_children(self, operands:list[int]):
         if TreeNode.root.solution_found:
             return
-        if self.actual_value == TreeNode.root.result_of_equation and len(self.operands) == 1:
+        if self.actual_value == TreeNode.root.result_of_equation and len(operands) == 1:
             TreeNode.root.solution_found = True
             TreeNode.root.leaf_with_solution = self
-        elif len(self.operands) > 1 and self.actual_value <= TreeNode.root.result_of_equation:
-            add_children(self)
+        elif len(operands) > 1 and self.actual_value <= TreeNode.root.result_of_equation:
+            add_children(self, operands)
 
 
-def add_children(node: TreeRoot | TreeNode):
-    child_operands = node.operands[1:]
+def add_children(node: TreeRoot | TreeNode, operands:list[int]):
+    child_operands = operands[1:]
     node.childrens.append(TreeNode('*', node, node.actual_value, child_operands))
     node.childrens.append(TreeNode('||', node, node.actual_value, child_operands))
     node.childrens.append(TreeNode('+', node, node.actual_value, child_operands))

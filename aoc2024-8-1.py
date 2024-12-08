@@ -1,11 +1,9 @@
 import numpy as np
 
-
 def in_grid(lines: list[[any]], point: [int]) -> bool:
     if (point[0] < 0 or point[0] >= len(lines)) or (point[1] < 0 or point[1] >= len(lines[0])):
         return False
     return True
-
 
 f = open("aoc2024-8-1-input.txt", "r")
 content = f.read()
@@ -40,22 +38,4 @@ for y in range(len(grid)):
                 antennas[char].append([y, x])
             else:  # nova antena prvni sveho druhu
                 antennas[char] = [[y, x]]
-
-print(antinodes_cnt)  # funguje na vzorovych prikladech a pro velky input vraci 389, coz pry neni spravna hodnota. Proc?!?!
-debug = True # todo lada vyhod celej spodek po vyreseni
-if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
-    solution_view = np.full((len(grid), len(grid)), '.', dtype=str)
-    for key in antennas.keys():
-        for antena in antennas[key]:
-            solution_view[antena[0]][antena[1]] = key
-    for y in range(len(grid)):
-        for x in range(len(grid)):
-            if antinode_at[y][x]:
-                solution_view[y][x] = '~' if str(solution_view[y][
-                                                     x]).isalnum() else '#'  # pokud antinode prekryva antenu vytiskni ~, jinak znak anteny
-    view_entry_and_solution_side_by_side = []
-    for y in range(len(grid)):
-        view_entry_and_solution_side_by_side.append(grid[y] + '    ' + ''.join(solution_view[y]))
-    print('\n')
-    print('\n'.join(view_entry_and_solution_side_by_side))
-    print(antennas)
+print(antinodes_cnt)

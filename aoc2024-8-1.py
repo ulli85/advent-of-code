@@ -18,14 +18,14 @@ for y in range(len(grid)):
         char = grid[y][x]
         if char.isalnum():
             if char in antennas:
-                # pokud uz takto pojmenovana antena je, musim ji vyrusit se vsemi jiz znamymi
+                # mam uz zalozeny seznam souradnic predchozich anten pro takovy znak?
                 for antenna in antennas[char]:
                     a1 = [y, x]
                     a2 = [antenna[0], antenna[1]]
-                    # vector (a1 - a2) + A1 souradnice prvniho bodu pro blokovani
+                    # vector (a1 - a2) + A1 spocitam souradnice prvniho bodu pro umisteni antinode
                     vect_a1_a2 = [a1[0] - a2[0], a1[1] - a2[1]]
                     antinode_a1 = [a1[0] + vect_a1_a2[0], a1[1] + vect_a1_a2[1]]
-                    # vector (a2 - a1) + A2 souradnice druheho bodu pro blokovani
+                    # vector (a2 - a1) + A2 souradnice druheho druheho bodu pro umisteni antinode
                     vect_a2_a1 = [a2[0] - a1[0], a2[1] - a1[1]]
                     antinode_a2 = [a2[0] + vect_a2_a1[0], a2[1] + vect_a2_a1[1]]
                     if in_grid(grid, antinode_a1) and not antinode_at[antinode_a1[0]][antinode_a1[1]]:
@@ -36,7 +36,7 @@ for y in range(len(grid)):
                         antinodes_cnt += 1
                 # pridam novou, jiz vyrusenou s ostatnimi antenami do seznamu
                 antennas[char].append([y, x])
-            else:  # antena je prvni s danym oznacenim, zalozim pro ni novy seznam
+            else:  # tato antena je prvni s timto popiskem, zalozim pro ni novy seznam
                 antennas[char] = [[y, x]]
 debug = True
 if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu

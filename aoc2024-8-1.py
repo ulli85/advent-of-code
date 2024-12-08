@@ -39,7 +39,7 @@ for y in range(len(grid)):
             else:  # tato antena je prvni s timto popiskem, zalozim pro ni novy seznam
                 antennas[char] = [[y, x]]
 
-print(antinodes_cnt)  # funguje na vzorovych prikladech ale hodnota pro velky input neni spravna. Proc?!?!
+print(antinodes_cnt)  # funguje na vzorovych prikladech a pro velky input vraci 389, coz pry neni spravna hodnota. Proc?!?!
 debug = True # todo lada vyhod celej spodek po vyreseni
 if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
     solution_view = np.full((len(grid), len(grid)), '.', dtype=str)

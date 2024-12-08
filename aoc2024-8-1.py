@@ -47,7 +47,7 @@ if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vyti
     for y in range(len(grid)):
         for x in range(len(grid)):
             if antinode_at[y][x]:
-                solution_view[y][x] = '~' if str(solution_view[y][x]).isalnum() else '#'
+                solution_view[y][x] = '~' if str(solution_view[y][x]).isalnum() else '#' # pokud antinode prekryva antenu vytiskni ~, jinak znak anteny
     view_entry_and_solution_side_by_side = []
     for y in range(len(grid)):
         view_entry_and_solution_side_by_side.append(grid[y] + '    ' + ''.join(solution_view[y]))

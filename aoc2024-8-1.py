@@ -19,7 +19,7 @@ for y in range(len(grid)):
         if char.isalnum():
             if char in antennas:
                 # mam uz zalozeny seznam souradnic predchozich anten pro takovy znak?
-                for antenna in antennas[char]:
+                for antenna in antennas[char]: # pro vsechny stavajici anteny umistim antinode
                     a1 = [y, x]
                     a2 = [antenna[0], antenna[1]]
                     # vector (a1 - a2) + A1 spocitam souradnice prvniho bodu pro umisteni antinode

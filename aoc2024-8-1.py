@@ -15,10 +15,11 @@ antinode_at = np.full((len(grid), len(grid)), False, dtype=bool)
 antinodes_cnt = 0
 for y in range(len(grid)):
     for x in range(len(grid)):
-        if grid[y][x].isalnum():
-            if grid[y][x] in antennas:
+        char = grid[y][x]
+        if char.isalnum():
+            if char in antennas:
                 # pokud uz takto pojmenovana antena je, musim ji vyrusit se vsemi jiz znamymi
-                for antenna in antennas[grid[y][x]]:
+                for antenna in antennas[char]:
                     a1 = [y, x]
                     a2 = [antenna[0], antenna[1]]
                     # vector (a1 - a2) + A1 souradnice prvniho bodu pro blokovani
@@ -34,9 +35,9 @@ for y in range(len(grid)):
                         antinode_at[antinode_a2[0]][antinode_a2[1]] = True
                         antinodes_cnt += 1
                 # pridam novou, jiz vyrusenou s ostatnimi antenami do seznamu
-                antennas[grid[y][x]].append([y, x])
+                antennas[char].append([y, x])
             else:  # antena je prvni s danym oznacenim, zalozim pro ni novy seznam
-                antennas[grid[y][x]] = [[y, x]]
+                antennas[char] = [[y, x]]
 debug = True
 if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
     solution_view = np.full((len(grid), len(grid)), '.', dtype=str)

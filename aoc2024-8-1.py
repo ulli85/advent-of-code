@@ -14,11 +14,8 @@ lines = content.splitlines()
 solution = 0
 antennas = {}
 processed = {}
-view_antennas = np.array(lines)
-view = np.full((len(lines), len(lines)), '.', dtype=str)
 antinode_at = np.full((len(lines), len(lines)), False, dtype=bool)
 antinodes_cnt = 0
-debug = True
 for y in range(len(lines)):
     for x in range(len(lines)):
         if lines[y][x].isalnum():
@@ -43,9 +40,9 @@ for y in range(len(lines)):
                 antennas[lines[y][x]].append([y, x])
             else:  # antena je prvni s danym oznacenim je prvni, zalozim novy seznam
                 antennas[lines[y][x]] = [[y, x]]
-if debug:
-    print('\n'.join(lines))
-
+debug = True
+if debug: ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
+    view = np.full((len(lines), len(lines)), '.', dtype=str)
     for key in antennas.keys():
         for antena in antennas[key]:
             view[antena[0]][antena[1]] = key
@@ -55,7 +52,8 @@ if debug:
                 view[y][x] = '~' if str(view[y][x]).isalnum() else '#'
     view_compact = []
     for y in range(len(lines)):
-        view_compact.append(''.join(view[y]))
+        view_compact.append(lines[y] + '    ' + ''.join(view[y]))
     print('\n')
     print('\n'.join(view_compact))
+    print(antennas)
 print(antinodes_cnt) # funguje na vzorovych prikladech ale ne pro velky input :-(

@@ -19,7 +19,7 @@ for y in range(len(grid)):
         if char.isalnum():
             if char in antennas:
                 # mam uz zalozeny seznam souradnic predchozich anten pro takovy znak?
-                for antenna in antennas[char]: # pro vsechny stavajici anteny umistim antinode
+                for antenna in antennas[char]:  # pro vsechny stavajici anteny umistim antinode
                     a1 = [y, x]
                     a2 = [antenna[0], antenna[1]]
                     # vector (a1 - a2) + A1 spocitam souradnice prvniho bodu pro umisteni antinode
@@ -38,7 +38,9 @@ for y in range(len(grid)):
                 antennas[char].append([y, x])
             else:  # tato antena je prvni s timto popiskem, zalozim pro ni novy seznam
                 antennas[char] = [[y, x]]
-debug = True
+
+print(antinodes_cnt)  # funguje na vzorovych prikladech ale hodnota pro velky input neni spravna. Proc?!?!
+debug = True # todo lada vyhod celej spodek po vyreseni
 if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
     solution_view = np.full((len(grid), len(grid)), '.', dtype=str)
     for key in antennas.keys():
@@ -47,11 +49,11 @@ if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vyti
     for y in range(len(grid)):
         for x in range(len(grid)):
             if antinode_at[y][x]:
-                solution_view[y][x] = '~' if str(solution_view[y][x]).isalnum() else '#' # pokud antinode prekryva antenu vytiskni ~, jinak znak anteny
+                solution_view[y][x] = '~' if str(solution_view[y][
+                                                     x]).isalnum() else '#'  # pokud antinode prekryva antenu vytiskni ~, jinak znak anteny
     view_entry_and_solution_side_by_side = []
     for y in range(len(grid)):
         view_entry_and_solution_side_by_side.append(grid[y] + '    ' + ''.join(solution_view[y]))
     print('\n')
     print('\n'.join(view_entry_and_solution_side_by_side))
     print(antennas)
-print(antinodes_cnt)  # funguje na vzorovych prikladech ale ne pro velky input :-(

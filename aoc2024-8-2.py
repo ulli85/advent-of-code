@@ -27,7 +27,6 @@ for y in range(len(grid)):
                     divisor = abs(math.gcd(dy, dx))
                     dy = int(dy/divisor)
                     dx = int(dx/divisor)
-                     # c = -(by + ax)
                     # vypocet potencionalniho umisteni antinodu
                     # kazda antena je nyni antinode
                     for j in [-1, 1]:
@@ -48,9 +47,9 @@ for y in range(len(grid)):
             else:  # nova antena prvni sveho druhu
                 antennas[char] = [[y, x]]
 
-print(antinodes_cnt)  # funguje na vzorovych prikladech a pro velky input vraci 389, coz pry neni spravna hodnota. Proc?!?!
+print(antinodes_cnt)
 debug = True
-if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
+if debug:  # pretty print of input and solution next to it
     solution_view = np.full((len(grid), len(grid)), '.', dtype=str)
     for key in antennas.keys():
         for antena in antennas[key]:

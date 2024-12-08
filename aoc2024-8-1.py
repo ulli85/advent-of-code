@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import linalg as la
 
 
 def in_grid(lines: list[[any]], point: [int]) -> bool:
@@ -41,7 +40,7 @@ for y in range(len(lines)):
             else:  # antena je prvni s danym oznacenim je prvni, zalozim novy seznam
                 antennas[lines[y][x]] = [[y, x]]
 debug = True
-if debug: ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
+if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu
     view = np.full((len(lines), len(lines)), '.', dtype=str)
     for key in antennas.keys():
         for antena in antennas[key]:
@@ -56,4 +55,4 @@ if debug: ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytis
     print('\n')
     print('\n'.join(view_compact))
     print(antennas)
-print(antinodes_cnt) # funguje na vzorovych prikladech ale ne pro velky input :-(
+print(antinodes_cnt)  # funguje na vzorovych prikladech ale ne pro velky input :-(

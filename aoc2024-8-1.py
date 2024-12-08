@@ -37,7 +37,7 @@ for y in range(len(lines)):
                         antinodes_cnt += 1
                 # pridam novou, jiz vyrusenou s ostatnimi antenami do seznamu
                 antennas[lines[y][x]].append([y, x])
-            else:  # antena je prvni s danym oznacenim je prvni, zalozim novy seznam
+            else:  # antena je prvni s danym oznacenim, zalozim pro ni novy seznam
                 antennas[lines[y][x]] = [[y, x]]
 debug = True
 if debug:  ## nemam poneti co s tim, chybu nevidim, tak si to alespon hezky vytisknu

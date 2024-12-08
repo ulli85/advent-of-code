@@ -10,9 +10,7 @@ def in_grid(lines: list[[any]], point: [int]) -> bool:
 f = open("aoc2024-8-1-input.txt", "r")
 content = f.read()
 grid = content.splitlines()
-solution = 0
 antennas = {}
-processed = {}
 antinode_at = np.full((len(grid), len(grid)), False, dtype=bool)
 antinodes_cnt = 0
 for y in range(len(grid)):

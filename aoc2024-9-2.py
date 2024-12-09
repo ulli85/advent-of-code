@@ -40,7 +40,8 @@ while i > 0:
 
     for gap_idx in keys_sorted:
         if gap_idx > i:
-            continue
+            memgap.pop(gap_idx)
+            break
         if memgap[gap_idx] >= flen:
             # moving file
             for x in range(flen):

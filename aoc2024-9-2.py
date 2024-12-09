@@ -53,9 +53,8 @@ while i > 0:
             break
     i -= flen
 
-sum = 0
-k = 0
+total_sum = 0
 for k, i in enumerate(disk):
         if disk[k] != -1:
-            sum += k * i
-print(sum)
+            total_sum += k * i
+print(total_sum)

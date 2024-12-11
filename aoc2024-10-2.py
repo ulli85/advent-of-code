@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class Node:
     ADJACENCY = [[-1, 0], [1, 0], [0, -1], [0, 1]]
 

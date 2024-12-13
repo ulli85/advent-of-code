@@ -79,26 +79,26 @@ class Combination:
             else:
                 print(f"Negative solution: A = {clicks[0]} B = {clicks[1]}")
         # ------solution 1 ----------
-        # 1 |a * ax + b * bx = prize_x / * -ay
-        # 2 |a * ay + b * by = prize_y / * ax
+        # 1 |a1 * ax + b1 * bx = prize_x / * -ay
+        # 2 |a1 * ay + b1 * by = prize_y / * ax
         # -------------------------
-        # 1 |-a * ax * ay - b * bx * ay = -(prize_x * ay)
-        # 2 | a * ax * ay + b * by * ax = prize_y * ax
+        # 1 |-a1 * ax * ay - b1 * bx * ay = -(prize_x * ay)
+        # 2 | a1 * ax * ay + b1 * by * ax = prize_y * ax
         # --------------------------
-        # 1 + 2 | b * (-bx * ay + by * ax) = prize_y * ax -(prize_x * ay) / : (-bx * ay + by * ax)
-        # b = (prize_y * ax -(prize_x * ay)) / (-bx * ay + by * ax) ===> solution b
-        # a = (prize_y - b * by) / ay ==> solution ===> solution a
+        # 1 + 2 | b1 * (-bx * ay + by * ax) = prize_y * ax -(prize_x * ay) / : (-bx * ay + by * ax)
+        # b1 = (prize_y * ax -(prize_x * ay)) / (-bx * ay + by * ax) ===> solution b
+        # a1 = (prize_y - b1 * by) / ay ==> solution ===> solution a
 
         # --------- solution 2 ---------
-        # 1 |a * ax + b * bx = prize_x / * by
-        # 2 |a * ay + b * by = prize_y / * -bx
+        # 1 |a2 * ax + b2 * bx = prize_x / * by
+        # 2 |a2 * ay + b2 * by = prize_y / * -bx
         # -------------------------
-        # 1 |a * ax * by + b * bx * by = prize_x * by
-        # 2 |-a * ay * bx - b * by * bx = -(prize_y * bx)
+        # 1 |a2 * ax * by + b2 * bx * by = prize_x * by
+        # 2 |-a2 * ay * bx - b2 * by * bx = -(prize_y * bx)
         # -------------------------
-        # 1 + 2 | a * ax * by - a * ay * bx = prize_x * by -(prize_y * bx)
-        # a = (prize_x * by -(prize_y * bx)) / (ax * by - ay * bx)
-        # b = (prize_x - a * ax) / bx
+        # 1 + 2 | a2 * ax * by - a2 * ay * bx = prize_x * by -(prize_y * bx)
+        # a2 = (prize_x * by -(prize_y * bx)) / (ax * by - ay * bx)
+        # b2 = (prize_x - a2 * ax) / bx
 
 
 class Machine:

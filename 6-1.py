@@ -13,7 +13,7 @@ def outside_grid(lines: list, next_y: int, next_x) -> bool:
         return True
     return False
 
-f = open("6-2-input.txt", "r")
+f = open("input/6-2.txt", "r")
 content = f.read()
 lines = content.splitlines()
 directions = {'>': [0, 1], '^': [-1, 0], 'v': [1, 0], '<': [0, -1]}

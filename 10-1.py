@@ -104,7 +104,7 @@ class Grid:
                 node.path_len = 0
 
 
-f = open("10-1-input.txt", "r")
+f = open("input/10-1.txt", "r")
 input = f.read()
 grid = Grid(input.splitlines())
 

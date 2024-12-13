@@ -1,4 +1,4 @@
-f = open("4-1-input.txt", "r")
+f = open("input/4-1.txt", "r")
 content = f.read()
 lines = content.splitlines()
 x_indexes = []

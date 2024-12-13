@@ -15,7 +15,7 @@ def put_stone(stone_num: int, times: int, into: dict):
         into[stone_num] = times
 
 stones = {}
-f = open("11-1-input.txt", "r")
+f = open("input/11-1.txt", "r")
 for i in [int(x) for x in f.read().split()]:
     put_stone(i, 1, stones)
 

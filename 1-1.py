@@ -1,4 +1,4 @@
-f = open("1-1-input.txt", "r")
+f = open("input/1-1.txt", "r")
 content = f.read()
 print(f.read())
 lines = content.splitlines()

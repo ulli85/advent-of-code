@@ -11,7 +11,7 @@ def print_stats(debug:bool, is_free_space: bool=False, optional:str=None):
         print(f"space: {free_space}")
         print(f"spmem: {sparse_mem}\n")
 
-f = open("9-1-input.txt", "r")
+f = open("input/9-1.txt", "r")
 memory = f.read()
 print(f"memory: {memory}")
 free_space = [int(x) for x in memory[1::2]]

@@ -3,7 +3,7 @@ from collections import Counter
 disk = []
 fid = 0
 
-f = open("9-1-input.txt", "r")
+f = open("input/9-1.txt", "r")
 memory = f.read()
 for i, char in enumerate(memory):
     x = int(char)

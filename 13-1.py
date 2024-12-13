@@ -92,7 +92,7 @@ class Machine:
             return combination.get_cost(self)
         raise Exception('Not winning combination!')
 
-f = open("13-1-input.txt", "r")
+f = open("input/13-1.txt", "r")
 input = f.read().splitlines()
 min_tokens = 0
 for i in range(0, int((len(input) + 1)), 4):

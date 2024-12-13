@@ -14,7 +14,7 @@ def get_middle_number(updatestr: str) -> int:
     return int(numbers[index])
 
 
-f = open("5-1-input.txt", "r")
+f = open("input/5-1.txt", "r")
 content = f.read()
 lines = content.splitlines()
 rules = {}

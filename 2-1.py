@@ -29,7 +29,7 @@ def is_safe_decremental(row:list, max_errors) -> bool:
     return True
 
 
-f = open("2-1-input.txt", "r")
+f = open("input/2-1.txt", "r")
 content = f.read()
 print(f.read())
 lines = content.splitlines()

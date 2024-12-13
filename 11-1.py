@@ -10,7 +10,7 @@ def blink(num: int):
     return [2024 * num]
 
 
-f = open("11-1-input.txt", "r")
+f = open("input/11-1.txt", "r")
 input = [int(x) for x in f.read().split()]
 stones = deque(input)
 blink_cnt = 25

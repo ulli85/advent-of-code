@@ -62,7 +62,7 @@ def dfs_go(y, x, region: Region):
             dfs_go(adjy, adjx, region)
 
 
-f = open("aoc2024-12-1-input.txt", "r")
+f = open("12-1-input.txt", "r")
 field = f.read().splitlines()
 field_id = 0
 arr = np.full((len(field), len(field[0])), -1, dtype=int)

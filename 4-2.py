@@ -1,7 +1,7 @@
 def in_range(value: int, min: int, max: int) -> bool:
     return min <= value < max
 
-f = open("aoc2024-4-2-input.txt", "r")
+f = open("4-2-input.txt", "r")
 content = f.read()
 lines = content.splitlines()
 a_indexes = []

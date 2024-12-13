@@ -62,7 +62,7 @@ def add_children(node: TreeRoot | TreeNode, operands: list[int]):
     node.children.append(TreeNode('+', node, node.actual_value, child_operands))
 
 
-f = open("aoc2024-7-1-input.txt", "r")
+f = open("7-1-input.txt", "r")
 content = f.read()
 lines = content.splitlines()
 solution = 0

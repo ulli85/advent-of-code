@@ -140,7 +140,7 @@ class Machine:
         raise Exception('Not winning combination!')
 
 
-f = open("aoc2024-13-1-input.txt", "r")
+f = open("13-1-input.txt", "r")
 input = f.read().splitlines()
 min_tokens = 0
 for i in range(0, int((len(input) + 1)), 4):

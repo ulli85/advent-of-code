@@ -71,7 +71,7 @@ class TreeNode:
         return solution
 
 
-f = open("aoc2024-7-1-input.txt", "r")
+f = open("7-1-input.txt", "r")
 content = f.read()
 print(content)
 lines = content.splitlines()

@@ -1,6 +1,6 @@
 import re
 
-f = open("aoc2024-3-1-input.txt", "r")
+f = open("3-1-input.txt", "r")
 content = f.read()
 res = re.findall("mul\\(\\d{1,3},\\d{1,3}\\)|don\'t\\(\\)|do\\(\\)", content)
 suma = 0

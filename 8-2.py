@@ -7,7 +7,7 @@ def in_grid(lines: list[[any]], point: [int]) -> bool:
     return True
 
 
-f = open("aoc2024-8-1-input.txt", "r")
+f = open("8-1-input.txt", "r")
 content = f.read()
 grid = content.splitlines()
 antennas = {}

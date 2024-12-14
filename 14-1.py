@@ -6,11 +6,6 @@ STEPS = 100
 X_QUADRANT = (WIDTH - 1) // 2
 Y_QUADRANT = (HEIGHT - 1) // 2
 
-def pos_n(pos: int, velocity: int, steps: int, max: int):
-    pos = (pos + velocity * steps) % max
-    if pos < 0: pos += max
-    return pos
-
 res = re.findall("p=(\\d+),(\\d+) v=(-?\\d+),(-?\\d+)", open("input/14-1.txt").read())
 ld_count = lt_count = rd_count = rt_count = 0
 for robot in res:

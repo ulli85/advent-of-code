@@ -13,7 +13,7 @@ def pos_n(pos: int, velocity: int, steps: int, max: int):
 
 res = re.findall("p=(\\d+),(\\d+) v=(-?\\d+),(-?\\d+)", open("input/14-1.txt").read())
 ld_count = lt_count = rd_count = rt_count = 0
-for i, robot in enumerate(res):
+for robot in res:
     px, py, vx, vy = int(robot[0]), int(robot[1]), int(robot[2]), int(robot[3])
     xn, yn = (px + vx * STEPS) % WIDTH, (py + vy * STEPS) % HEIGHT
 

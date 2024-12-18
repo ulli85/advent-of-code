@@ -4,7 +4,7 @@ from enum import Enum
 import math
 from collections import deque
 
-numbers = [int(x) for x in re.findall("-?\\d+", open("input/18-1.txt").read())]
+numbers = [int(x) for x in re.findall("\\d+", open("input/18-1.txt").read())]
 coords = list(zip(numbers[0::2], numbers[1::2]))  # [(x0,y0),..,(xn, yn)]
 GR_SZ = 71
 

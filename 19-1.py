@@ -1,97 +1,100 @@
 input = open("input/19-1.txt").read().splitlines()
-patterns = input[0].split(', ')
-designs = input[2::]
-patterns.sort()
-designs.sort()
-print(f'{patterns}\n{designs}')
+PATTERNS = input[0].split(', ')
+DESIGNS = input[2::]
+LEN2PT = {}  # key is pattern_len, value list of unique patterns with length pattern_len
 
-
-def get_unique_patterns() -> {}:
-    len2pt = {}  # key is pattern_len, value list of patterns with pattern_len
+def init_len2patttern_dictionary():
+    # find boundaries
     min_len = 99999  # lowest len of all patterns found
     max_len = 0  # highest len of all patterns found
-    for pattern in patterns:
+
+    for pattern in PATTERNS:
         length = len(pattern)
         if min_len > length: min_len = length
         if max_len < length: max_len = length
-        if length in len2pt:
-            len2pt[length].append(pattern)
-        else:
-            pt = [pattern]
-            len2pt[length] = pt
-    for i in (2, max_len):  # for all longer patterns with len 2+
-        filtered = []
-        if i in len2pt:  # if such a longer pattern exists
-            unfiltered_patterns_with_len_i = len2pt[i]
-            for pattern_len_i in unfiltered_patterns_with_len_i:  # for all patterns with fixed len
-                full_pattern_with_len_i = pattern_len_i
-                for j in (i - 1, 0, -1):  # (i-1, 1, -1)? for all subpatterns of size i-1 to 1
-                    if j in len2pt:  # if subpattern exist
-                        sub_patterns = len2pt[j]  # get all subpatterns
-                        match = True
-                        while match and len(
-                                pattern_len_i) > 0:  # while longer pattern startswith subpattern we do its substring
-                            match = False
-                            for sub_pattern in sub_patterns:
-                                if pattern_len_i.startswith(
-                                        sub_pattern):  # if longer pattern contains subpattern, cut it off
-                                    match = True
-                                    pattern_len_i = pattern_len_i[len(sub_pattern)::]
-                if len(pattern_len_i) > 0:  # longer pattern cannot be fully composed by subpatterns - we add it to list
-                    filtered.append(full_pattern_with_len_i)
 
-            if len(filtered) == 0:
-                len2pt.pop(i)  # all longer patterns that could be composed by its subpatterns we dispose
-            else:
-                len2pt[i] = filtered  # unique longer patterns left
-    return len2pt
+    LEN2PT[min_len] = []
+    for pattern in PATTERNS:
+        if len(pattern) == min_len:
+            LEN2PT[min_len].append(pattern)  # shortest patterns (should be a set)
+
+    # add unique patterns only to len2pt dictionary
+    for i in range(min_len + 1, max_len + 1):
+        for pattern in PATTERNS:
+            if len(pattern) == i:
+                if is_composable(pattern): continue
+                if i not in LEN2PT:
+                    LEN2PT[i] = [pattern]
+                else:
+                    LEN2PT[i].append(pattern)
 
 
-ptlen_2_unique_patterns_lst = get_unique_patterns()
-print(ptlen_2_unique_patterns_lst)
-# now we create set of unique patterns
-unique_patterns_set = set()
-for uniq_patterns_lst in ptlen_2_unique_patterns_lst.values():
-    for uniq_pattern in uniq_patterns_lst:
-        unique_patterns_set.add(uniq_pattern)
-print(unique_patterns_set)
+def create_unique_patterns_set() -> set:
+    unique_patterns_set = set()
+    for uniq_patterns_lst in LEN2PT.values():
+        for uniq_pattern in uniq_patterns_lst:
+            unique_patterns_set.add(uniq_pattern)
+    return unique_patterns_set
 
-possible_cnt = 0
-# we compose all different pattern lenths
-pattern_lens = list(ptlen_2_unique_patterns_lst.keys())
-pattern_lens.sort()
-pattern_lens.reverse()  # longer keys first
-print(pattern_lens)
-for design in designs:
-    applied_lens = []  # we do not know exact ordering of patterns applied on design, so we must search of all possible combinations such patterns applification
-    tmp_design = design
-    match = True
+
+def is_composable(pattern: str) -> bool:
+    tmp = pattern
+#    print(pattern)
+    pattern_lens = sorted(list(LEN2PT.keys()), reverse=True)  # longest apply first
     max_len_2_apply = pattern_lens[0]
-    while len(tmp_design) > 0 and match:
+    match = True
+    uniq_patterns = create_unique_patterns_set()
+    applied_lens = []
+    applied_patterns = []
+    while len(tmp) > 0 and match:
         match = False
         # check longest patterns first
         for ptlen in pattern_lens:  # for all length of patterns
             if ptlen > max_len_2_apply: continue
-            if ptlen <= len(tmp_design):
-                if tmp_design[0:ptlen] in unique_patterns_set:
-                    tmp_design = tmp_design[ptlen::]
+            if ptlen <= len(tmp):
+                prefix = tmp[0:ptlen]
+                if prefix in uniq_patterns:
+                    applied_patterns.append(prefix)
+                    tmp = tmp[ptlen:]
+                    #print(tmp + '  ' + '|'.join(applied_patterns))
                     match = True
                     applied_lens.append(ptlen)
-                    continue
+                    max_len_2_apply = len(tmp)
+                    break
         # back_track rules
         if not match and len(applied_lens) > 0:
+#            print(tmp + '  ' + '|'.join(applied_patterns))
             last_applied_len = applied_lens[-1]
             if last_applied_len == 1:
                 applied_lens.pop()
-                if len(applied_lens) == 0: break # cannot apply anything else
-                tmp_design = design[0:len(tmp_design) + last_applied_len]  # rollback 1 char change
-                last_applied_len = applied_lens[-1] # apply last rule
-            tmp_design = design[0:len(tmp_design) + last_applied_len]  # rollback change
-            applied_lens.pop()
+                last_pattern = applied_patterns.pop()
+                if len(applied_lens) == 0: break  # cannot apply anything else
+                tmp = last_pattern + tmp # rollback 1 char change
+ #               print('rooll1 ' + tmp)
+              #  print(applied_lens)
+            last_pattern = applied_patterns.pop()
+            last_applied_len = applied_lens.pop()
+            tmp = last_pattern + tmp   # rollback change
+#            print('rooll2 ' + tmp)
+         #   print(applied_lens)
             max_len_2_apply = last_applied_len - 1
             match = True
-    if len(tmp_design) == 0:
-        possible_cnt += 1
-    else:
-        print(f'{design} {applied_lens}')
-print(possible_cnt)
+    return len(tmp) == 0
+
+def test_unique_patterns():
+    for pattern in PATTERNS:
+        if is_composable(pattern): continue
+        raise Exception(f"Pattern {pattern} is not composable")
+
+
+init_len2patttern_dictionary()
+test_unique_patterns()
+print(LEN2PT)
+#print(PATTERNS)
+DESIGNS.sort()
+#print(DESIGNS)
+composable_designs = 0
+for design in DESIGNS:
+    if is_composable(design): composable_designs += 1
+
+print(composable_designs)

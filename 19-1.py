@@ -5,40 +5,45 @@ patterns.sort()
 designs.sort()
 print(f'{patterns}\n{designs}')
 
+
 def get_unique_patterns() -> {}:
-    len2pt = {} # key is pattern_len, value list of patterns with pattern_len
-    min_len = 99999 # lowest len of all patterns found
-    max_len = 0 # highest len of all patterns found
+    len2pt = {}  # key is pattern_len, value list of patterns with pattern_len
+    min_len = 99999  # lowest len of all patterns found
+    max_len = 0  # highest len of all patterns found
     for pattern in patterns:
         length = len(pattern)
         if min_len > length: min_len = length
-        if max_len < length:max_len = length
+        if max_len < length: max_len = length
         if length in len2pt:
             len2pt[length].append(pattern)
         else:
             pt = [pattern]
             len2pt[length] = pt
-    for i in (2, max_len): # for all longer patterns with len 2+
+    for i in (2, max_len):  # for all longer patterns with len 2+
         filtered = []
-        if i in len2pt: # if such a longer pattern exists
+        if i in len2pt:  # if such a longer pattern exists
             unfiltered_patterns_with_len_i = len2pt[i]
-            for pattern_len_i in unfiltered_patterns_with_len_i: # for all patterns with fixed len
+            for pattern_len_i in unfiltered_patterns_with_len_i:  # for all patterns with fixed len
                 full_pattern_with_len_i = pattern_len_i
-                for j in (i-1, 0, -1): # (i-1, 1, -1)? for all subpatterns of size i-1 to 1
-                    if j in len2pt: # if subpattern exist
-                        sub_patterns = len2pt[j] # get all subpatterns
+                for j in (i - 1, 0, -1):  # (i-1, 1, -1)? for all subpatterns of size i-1 to 1
+                    if j in len2pt:  # if subpattern exist
+                        sub_patterns = len2pt[j]  # get all subpatterns
                         match = True
-                        while match and len(pattern_len_i) > 0: # while longer pattern startswith subpattern we do its substring
+                        while match and len(
+                                pattern_len_i) > 0:  # while longer pattern startswith subpattern we do its substring
                             match = False
                             for sub_pattern in sub_patterns:
-                                if pattern_len_i.startswith(sub_pattern): # if longer pattern contains subpattern, cut it off
+                                if pattern_len_i.startswith(
+                                        sub_pattern):  # if longer pattern contains subpattern, cut it off
                                     match = True
                                     pattern_len_i = pattern_len_i[len(sub_pattern)::]
-                if len(pattern_len_i) > 0: # longer pattern cannot be fully composed by subpatterns - we add it to list
+                if len(pattern_len_i) > 0:  # longer pattern cannot be fully composed by subpatterns - we add it to list
                     filtered.append(full_pattern_with_len_i)
 
-            if len(filtered) == 0: len2pt.pop(i) # all longer patterns that could be composed by its subpatterns we dispose
-            else: len2pt[i] = filtered  # unique longer patterns left
+            if len(filtered) == 0:
+                len2pt.pop(i)  # all longer patterns that could be composed by its subpatterns we dispose
+            else:
+                len2pt[i] = filtered  # unique longer patterns left
     return len2pt
 
 
@@ -52,23 +57,41 @@ for uniq_patterns_lst in ptlen_2_unique_patterns_lst.values():
 print(unique_patterns_set)
 
 possible_cnt = 0
-# we try to compose design with unique patterns we have
+# we compose all different pattern lenths
 pattern_lens = list(ptlen_2_unique_patterns_lst.keys())
 pattern_lens.sort()
-pattern_lens.reverse() # longer keys first
+pattern_lens.reverse()  # longer keys first
 print(pattern_lens)
 for design in designs:
+    applied_lens = []  # we do not know exact ordering of patterns applied on design, so we must search of all possible combinations such patterns applification
     tmp_design = design
     match = True
+    max_len_2_apply = pattern_lens[0]
     while len(tmp_design) > 0 and match:
         match = False
         # check longest patterns first
-        for ptlen in pattern_lens: # for all length of patterns
+        for ptlen in pattern_lens:  # for all length of patterns
+            if ptlen > max_len_2_apply: continue
             if ptlen <= len(tmp_design):
                 if tmp_design[0:ptlen] in unique_patterns_set:
                     tmp_design = tmp_design[ptlen::]
                     match = True
-
-    if len(tmp_design) == 0: possible_cnt += 1
-    else: print(design)
+                    applied_lens.append(ptlen)
+                    continue
+        # back_track rules
+        if not match and len(applied_lens) > 0:
+            last_applied_len = applied_lens[-1]
+            if last_applied_len == 1:
+                applied_lens.pop()
+                if len(applied_lens) == 0: break # cannot apply anything else
+                tmp_design = design[0:len(tmp_design) + last_applied_len]  # rollback 1 char change
+                last_applied_len = applied_lens[-1] # apply last rule
+            tmp_design = design[0:len(tmp_design) + last_applied_len]  # rollback change
+            applied_lens.pop()
+            max_len_2_apply = last_applied_len - 1
+            match = True
+    if len(tmp_design) == 0:
+        possible_cnt += 1
+    else:
+        print(f'{design} {applied_lens}')
 print(possible_cnt)

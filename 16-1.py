@@ -96,7 +96,7 @@ def bfs_go() -> Node:
                 if len(adjacents) > 0:
                     adjacents.sort()
                     for ad in adjacents[::-1]:
-                        queue.append(ad)  # adjacents[::-1]: # proc to davam od konce?
+                        queue.append(ad)
 
     return end_node
 print(bfs_go().cost())

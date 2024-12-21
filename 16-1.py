@@ -23,7 +23,7 @@ class Node:
         return f'{self.direction} {self.rot_cnt}'
 
     def __lt__(self, other):
-        return self.cost()- other.cost()
+        return self.cost() - other.cost()
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
@@ -39,11 +39,6 @@ class Node:
 
     def cost(self):
         return self.rot_cnt * 1000 + self.steps
-
-
-def print_maze():
-    for line in MAZE:
-        print(''.join(line))
 
 
 def init_maze() -> [[Node]]:
@@ -99,4 +94,6 @@ def bfs_go() -> Node:
                         queue.append(ad)
 
     return end_node
+
+
 print(bfs_go().cost())

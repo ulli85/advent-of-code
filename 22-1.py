@@ -1,7 +1,7 @@
 input = [int(x) for x in open("input/22-1.txt").read().splitlines()]
 print(input)
 def evolve(sn: int) -> int:
-    sn = ((sn << 6) ^ sn) % 16777216 # (multiply secret by 64) XOR secret number
+    sn = ((sn << 6) ^ sn) % 16777216
     sn = ((sn >> 5) ^ sn) % 16777216
     sn = ((sn << 11) ^ sn) % 16777216
     return sn

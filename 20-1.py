@@ -5,7 +5,7 @@ MAZE: [[str]] = []
 WALL = '#'
 START_POS: [int] = []
 OFFSETS = [(-1, 0), (0, -1), (1, 0), (0, 1)]
-
+CHEATS = {}
 
 class Node:
     NODES: [['Node']] = None
@@ -119,7 +119,7 @@ def steps_2_end(start: Node, end: Node):
     return end.steps - start.steps
 
 
-def node_at_distance_from_end(end_node: Node, distance) -> Node:
+def node_at_distance(end_node: Node, distance) -> Node:
     if distance > end_node.steps:
         raise IndexError(f'Index too high! {distance} > {end_node.steps}')
     actual = end_node
@@ -129,16 +129,18 @@ def node_at_distance_from_end(end_node: Node, distance) -> Node:
     return actual
 
 
-def apply_cheat(end_node, distance):
-    new_start_node = node_at_distance_from_end(end_node, distance)
-    new_end_node = None
+def apply_cheat(start_node, end_node):
     for offset in OFFSETS:
-        if new_start_node.possible_cheat(offset):
-            init_maze(new_start_node, offset)
+        if start_node.possible_cheat(offset):
+            init_maze(start_node, offset)
             new_end_node = bfs_go()
             if new_end_node.steps < end_node.steps:
                 print_path(new_end_node)
-
+                saved_psecs = end_node.steps - new_end_node.steps
+                print(f'Saved {saved_psecs} ps!')
+                if saved_psecs in CHEATS:
+                    CHEATS[saved_psecs] += 1
+                else: CHEATS[saved_psecs] = 1
 
 def print_path(end_node) -> int:
     prev = last = end_node.prev
@@ -155,4 +157,8 @@ def print_path(end_node) -> int:
 init_maze()
 end_node = bfs_go()
 print_path(end_node)
-apply_cheat(end_node, end_node.steps)
+
+for i in range(4, end_node.steps):
+    start_node = node_at_distance(end_node, i)
+    apply_cheat(start_node, end_node)
+print(CHEATS)

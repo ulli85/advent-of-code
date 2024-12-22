@@ -3,9 +3,10 @@ from collections import deque
 
 MAZE: [[str]] = []
 WALL = '#'
-START_POS: [int] = []
+START_POS = np.full(2, 0, dtype=int)
 OFFSETS = [(-1, 0), (0, -1), (1, 0), (0, 1)]
 CHEATS = {}
+
 
 class Node:
     NODES: [['Node']] = None
@@ -27,6 +28,7 @@ class Node:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
+    # could be better!!
     def possible_cheat(self, offset: tuple[int, int]) -> bool:
         is_wall = False
         for i in [1, 2]:
@@ -37,42 +39,33 @@ class Node:
                 return False
         return is_wall
 
+    def apply_cheat_on_maze(self, offset: tuple[int, int])-> bool:
+        if self.possible_cheat(offset):
+            for i in [1, 2]:
+                yn = self.y + i * offset[0]
+                xn = self.x + i * offset[1]
+                if MAZE[yn][xn] != 'E':
+                    MAZE[yn][xn] = str(i)
+            return True
+        return False
+
 
 def in_grid(x, y) -> bool:
     return 0 <= y < len(MAZE) and 0 <= x < len(MAZE[0])
 
 
-def init_maze(start_node: Node = None, cheat_offset: tuple[int, int] = None):
+def init_maze():
     lines = open("input/20-1.txt").read().splitlines()
     MAZE.clear()
     for y, line in enumerate(lines):
         MAZE.append([str(x) for x in line])
-
         s_x = line.find('S')
         if s_x >= 0:
-            while len(START_POS) > 0: START_POS.pop()
-            START_POS.append(y)
-            START_POS.append(s_x)
+            START_POS[0] = y
+            START_POS[1] = s_x
     # input START to END data
-    if start_node is None:
-        Node.NODES = np.full((len(lines), len(lines[0])), None, dtype=Node)
-        Node.NODES[START_POS[0]][START_POS[1]] = Node(START_POS[0], START_POS[1])
-    # other start node, compared to input start node
-    else:
-        MAZE[START_POS[0]][START_POS[1]] = '~'  # '~' really WALL? Maybe .?
-        START_POS.pop()
-        START_POS.pop()
-        START_POS.append(start_node.y)
-        START_POS.append(start_node.x)
-        MAZE[START_POS[0]][START_POS[1]] = 'S'  # '~'
-        actual = start_node
-        Node.NODES = np.full((len(lines), len(lines[0])), None, dtype=Node)
-        # build old path
-        while actual is not None:
-            Node.NODES[actual.y][actual.x] = actual
-            actual = actual.prev
-        # apply two picosecs cheat, two WALL tiles replaced with 1,2 tiles
-        for i in [1, 2]: MAZE[START_POS[0] + i * cheat_offset[0]][START_POS[1] + i * cheat_offset[1]] = str(i)
+    Node.NODES = np.full((len(lines), len(lines[0])), None, dtype=Node)
+    Node.NODES[START_POS[0]][START_POS[1]] = Node(START_POS[0], START_POS[1])
 
 
 def bfs_go() -> Node:
@@ -129,36 +122,58 @@ def node_at_distance(end_node: Node, distance) -> Node:
     return actual
 
 
-def apply_cheat(start_node, end_node):
-    for offset in OFFSETS:
-        if start_node.possible_cheat(offset):
-            init_maze(start_node, offset)
-            new_end_node = bfs_go()
-            if new_end_node.steps < end_node.steps:
-                print_path(new_end_node)
-                saved_psecs = end_node.steps - new_end_node.steps
-                print(f'Saved {saved_psecs} ps!')
-                if saved_psecs in CHEATS:
-                    CHEATS[saved_psecs] += 1
-                else: CHEATS[saved_psecs] = 1
+def apply_cheat_on_maze(node: Node, offset: tuple[int, int]) -> bool:
+    if node.possible_cheat(offset):
+        init_maze()
+        node.apply_cheat_on_maze(offset)
+        return True
+    return False
 
 def print_path(end_node) -> int:
     prev = last = end_node.prev
     while prev is not None:
-        MAZE[prev.y][prev.x] = 'O'
+        tile = MAZE[prev.y][prev.x]
+        if tile != '1' and tile != '2':
+            MAZE[prev.y][prev.x] = 'O'
         last = prev
         prev = prev.prev
     MAZE[last.y][last.x] = 'S'
     for line in MAZE:
         print(''.join(line))
-    print(f'Path took {end_node.steps} ps.\n')
 
+def get_path_hash(end_node):
+    vals = []
+    actual = end_node.prev
+    while actual is not None:
+        vals.append(f'{actual.y}{actual.x}')
+        actual = actual.prev
+    return ''.join(vals)
 
 init_maze()
 end_node = bfs_go()
 print_path(end_node)
+print(f'Path took {end_node.steps} ps.\n')
+unique_paths = set()
+actual = end_node
+while actual is not None:
+    for offset in OFFSETS:
+        if apply_cheat_on_maze(actual, offset):
+            end_of_new_path = bfs_go()
+            psecs_diff = end_node.steps - end_of_new_path.steps
+            if psecs_diff > 0:
+                path_hash = get_path_hash(end_of_new_path)
+                if path_hash not in unique_paths:
+                    if psecs_diff in CHEATS:
+                        CHEATS[psecs_diff] += 1
+                    else: CHEATS[psecs_diff] = 1
+                    unique_paths.add(path_hash)
+                else: print('Path not unique')
+    actual = actual.prev
 
-for i in range(4, end_node.steps):
-    start_node = node_at_distance(end_node, i)
-    apply_cheat(start_node, end_node)
+cheat_lengts = sorted(list(CHEATS.keys()))
+for cheat_lengt in cheat_lengts:
+    times = CHEATS[cheat_lengt]
+    print(f'- There are {times} cheats that save {cheat_lengt} picoseconds')
+
+
 print(CHEATS)

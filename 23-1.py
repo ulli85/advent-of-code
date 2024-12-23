@@ -15,9 +15,9 @@ def add_edge(pc1: str, pc2: str):
 
 def add_triplet(triplet: [str]):
     triplet.sort()
-    if len(list(filter(lambda x: x.startswith('t'), triplet))) > 0:
+    if len(list(filter(lambda x: x.startswith('t'), triplet))) > 0:  # only triplets with t
         unique = ''.join(triplet)
-        if unique not in uniques:  # only triplets with t
+        if unique not in uniques:
             triplets.append(triplet)
             uniques.add(unique)
 
@@ -29,7 +29,6 @@ for edge in edges:
         add_edge(pc1, pc2)
         add_edge(pc2, pc1)
 
-components = []
 uniques = set()
 for pc1 in sets.keys():
     for pc2 in sets[pc1]:

@@ -36,5 +36,5 @@ for i, line in enumerate(lines):
 for j in range(i + 1, len(lines)):
     Gate(lines[j])
 
-
-print(''.join([ str(x) for x in list(map(lambda output: Gate.GATES[output].eval(), sorted(filter(lambda x: x.startswith('z'), Gate.GATES.keys()), reverse=True)))]))
+binary = ''.join([ str(x) for x in list(map(lambda output: Gate.GATES[output].eval(), sorted(filter(lambda x: x.startswith('z'), Gate.GATES.keys()), reverse=True)))])
+print(int(binary, 2))

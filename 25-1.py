@@ -11,10 +11,10 @@ for i, line in enumerate(lines):
     elif line == '' or i == len(lines) - 1:
         digits = []
         for i in range(ROW_SZ):
-            cdgit = -1
+            digit = -1
             for j in range(COL_SZ):
-                if obj[j][i] == '#': cdgit += 1
-            digits.append(cdgit)
+                if obj[j][i] == '#': digit += 1
+            digits.append(digit)
         if obj[0][0] == '#':
             LOCKS.append(digits)
         else:

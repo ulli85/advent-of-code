@@ -1,4 +1,4 @@
-lines = [str(x) for x in open("input/25-1.txt").read().splitlines()]
+lines = open("input/25-1.txt").read().splitlines()
 print(lines)
 KEYS = []
 LOCKS = []
@@ -8,7 +8,7 @@ COL_SZ = 7
 obj = []
 for i, line in enumerate(lines):
     if line != '': obj.append(line)
-    if line == '' or i == len(lines) - 1:
+    elif line == '' or i == len(lines) - 1:
         digits = []
         for i in range(ROW_SZ):
             cdgit = -1

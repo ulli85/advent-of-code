@@ -1,104 +1,50 @@
 import re
 
 
-class Pc:
-    DEBUG = True
-    INS_PTR = 0
-    INSTRUCTIONS = [
-        lambda o: pc.adv(o), lambda o: pc.bxl(o), lambda o: pc.bst(o), lambda o: pc.jnz(o),
-        lambda o: pc.bxc(o), lambda o: pc.out(o), lambda o: pc.bdv(o), lambda o: pc.cdv(o)]
-    OUTPUT: [str] = []
+def execute(prog_part: [int], answer: int = 0) -> int:
+    if len(prog_part) == 0:
+        return answer
+    for i in range(8):
+        A = (answer << 3) + i # value '3' based on running first part as a parameter of adv combo
+        B = 0
+        C = 0
+        a_next = A
 
-    def __init__(self, instr: [int]):
-        self.instr = instr
-        self.__pr('#-1#', -1)
+        def combo(o: int) -> int:
+            if o == 4:
+                return A
+            elif o == 5:
+                return B
+            elif o == 6:
+                return C
+            return o
 
-    def __inc_ptr__(self):
-        Pc.INS_PTR += 2
-    def __dec_ptr__(self, ins_ptr):
-        Pc.INS_PTR -= 2
-
-    def __pr(self, instr_nm: str, op: int):
-        if Pc.DEBUG:
-            print(f"{instr_nm}({op}), Regs = {REG}, PTR_I: {Pc.INS_PTR}")
-            if instr_nm == 'out':
-                print(f"{self.instr}")
-                print(f"OUT: {Pc.OUTPUT}")
-
-    def __combo__(self, o: int) -> int:
-        return REG[0] if o == 4 else REG[1] if o == 5 else REG[2] if o == 6 else o
-
-    def adv(self, o: int):
-        self.__inc_ptr__()
-        REG[0] = REG[0] // (2 ** self.__combo__(o))
-        self.__pr('adv', o)
-
-    def adv_i(self, o:int):
-        REG[0] = REG[0] << (self.__combo__(o))
-
-    def bxl(self, o: int):
-        REG[1] = REG[1] ^ o  # -> B
-        self.__pr('bxl', o)
-
-    def bst(self, o: int):
-        REG[1] = self.__combo__(o) % 8  # -> B
-        self.__pr('bst', o)
-
-    def jnz(self, o: int):
-        if REG[0] == 0:
-            self.__pr('jnz-loop', o)
-            return
-        Pc.INS_PTR = 2 * o
-        Pc.LTR_PTR = Pc.INS_PTR + 1
-        self.__pr('jnz', o)
-
-    def bxc(self, o: int):
-        REG[1] = REG[1] ^ REG[2]
-        self.__pr('bxc', o)
-
-    def out(self, o: int):
-        self.__inc_ptr__()
-        Pc.OUTPUT.append(str(self.__combo__(o) % 8))
-        self.__pr('out', o)
-
-    def bdv(self, o: int):
-        self.__inc_ptr__()
-        REG[1] = REG[0] // (2 ** self.__combo__(o))
-        self.__pr('bdv', o)
-
-    def bdv_i(self, o: int):
-        REG[1] = REG[0] << (self.__combo__(o))
-        self.__pr('bdv', o)
-
-    def cdv(self, o: int):
-        REG[2] = REG[0] // (2 ** self.__combo__(o))
-        self.__pr('cdv', o)
-
-    def cdv_i(self, o: int):
-        REG[2] = REG[0] << (self.__combo__(o))
-        self.__pr('cdv', o)
-
-    def execute(self):
-        while pc.INS_PTR < len(self.instr):
-            instr_idx = self.instr[pc.INS_PTR]
-            instr = Pc.INSTRUCTIONS[instr_idx]
-            param = self.instr[pc.INS_PTR + 1]
-            instr(param)
-            # jnz endless loop
-            if instr_idx == 3 and REG[0] == 0:
-                break
-    def execute_inverse(self):
-        Pc.INS_PTR = len(self.instr) - 2
+        for ptr in range(0, len(program) - 2, 2):
+            ins = program[ptr]
+            param = program[ptr + 1]
+            if ins == 0:
+                A = A >> combo(param)
+            elif ins == 1:
+                B = B ^ param
+            elif ins == 2:
+                B = combo(param) % 8
+            elif ins == 3:
+                raise ValueError('JNZ instruction inside program body')
+            elif ins == 4:
+                B = B ^ C
+            elif ins == 5:
+                output = combo(param) % 8
+                if output == prog_part[-1]:
+                    sol = execute(prog_part[:-1], a_next)
+                    if sol is None: continue
+                    return sol
+            elif ins == 6:
+                B = A >> combo(param)
+            elif ins == 7:
+                C = A >> combo(param)
+            else:
+                raise Exception(f'Unknown instruction {ins}.')
 
 
-
-
-
-r = [int(x) for x in re.findall("-?\\d+", open("input/17-1.txt").read())]
-REG = r[0:3]
-pc = Pc(r[3:])
-
-
-
-pc.execute()
-print(','.join(Pc.OUTPUT))
+program = [int(x) for x in re.findall("-?\\d+", open("input/17-1.txt").read())[3:]]
+print(execute(program))

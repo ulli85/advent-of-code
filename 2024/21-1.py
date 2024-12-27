@@ -14,7 +14,7 @@ NDPL_ARR = [['7', '8', '9'],
 NDPL = {'7': [0, 0], '8': [0, 1], '9': [0, 2],
         '4': [1, 0], '5': [1, 1], '6': [1, 2],
         '1': [2, 0], '2': [2, 1], '3': [2, 2],
-                     '0': [3, 1], 'A': [3, 2]
+        '0': [3, 1], 'A': [3, 2]
         }
 
 ARROWS = {
@@ -31,19 +31,13 @@ def numeric_path(start, row):
 
     dy = e_pos[0] - s_pos[0]
     dx = e_pos[1] - s_pos[1]
-    direction = ''
-    if dy != 0:
-        char = NDPL_ARR[s_pos[0] + dy][s_pos[1]]
-        if char is not None:
-            updown = 'v' if dy > 0 else '^'
-            direction = updown * abs(dy)
 
-    if dx != 0:
-        char = NDPL_ARR[s_pos[0]][s_pos[1] + dx]
-        if char is not None:
-            leftright = '<' if dx < 0 else '>'
-            direction += leftright * abs(dx)
-    return direction
+    char = NDPL_ARR[s_pos[0] + dy][s_pos[1]]
+    leftright = '<' if dx < 0 else '>'
+    updown = 'v' if dy > 0 else '^'
+    if char is None:
+        return leftright * abs(dx) + updown * abs(dy)
+    return updown * abs(dy) + leftright * abs(dx)
 
 
 def arrow_path(start, row):
@@ -66,13 +60,13 @@ def arrow_path(start, row):
 
 def next_path(start: str, row: str, disp: Display) -> str:
     if Display.NUMERIC == disp:
-        return numeric_path(start, row)
-    return arrow_path(start, row)
+        return numeric_path(start, row) + 'A'
+    return arrow_path(start, row) + 'A'
 
 
 def transform(start: str, row: str, result: str = '', disp: Display = Display.NUMERIC) -> str:
     if len(row) == 0: return result
-    return transform(row[0], row[1:], result + next_path(start, row, disp) + 'A', disp)
+    return transform(row[0], row[1:], result + next_path(start, row, disp), disp)
 
 
 lines = open("input/21-1.txt").read().splitlines()

@@ -9,17 +9,17 @@ class Display(Enum):
 NDPL_ARR = [['7', '8', '9'],
             ['4', '5', '6'],
             ['1', '2', '3'],
-            ['0', 'A', None]]
+            [None, '0', 'A']]
 
 NDPL = {'7': [0, 0], '8': [0, 1], '9': [0, 2],
         '4': [1, 0], '5': [1, 1], '6': [1, 2],
         '1': [2, 0], '2': [2, 1], '3': [2, 2],
-        '0': [3, 0], 'A': [3, 1]
+                     '0': [3, 1], 'A': [3, 2]
         }
 
 ARROWS = {
     'AA': '', 'A<': 'v<<', 'Av': ['v<', '<v'], 'A>': 'v', 'A^': '<',
-    '^^': '', '^A': '>', '^v': 'v', '^<': 'v<A', '^>': ['>v', 'v>'],
+    '^^': '', '^A': '>', '^v': 'v', '^<': 'v<', '^>': ['>v', 'v>'],
     '<<': '', '<A': ['>>^', '>^>'], '<v': '>', '<^': '>^', '<>': '>>',
     '>>': '', '>A': '^', '>v': '<', '>^': ['^<', '<^'], '><': '<<',
     'vv': '', 'v<': '<', 'v>': '>', 'v^': '^', 'vA': ['>^', '^>']}
@@ -79,14 +79,14 @@ lines = open("input/21-1.txt").read().splitlines()
 sum = 0
 for line in lines:
     s1 = transform('A', line)
-    s2 = transform('A', '<A^A>^^AvvvA', '', Display.ARROW)
+    s2 = transform('A', s1, '', Display.ARROW)
     s3 = transform('A', s2, '', Display.ARROW)
     row_num = int(line[0:len(line) - 1])
     print(s3)
     print(s2)
     print(s1)
     print(line)
-    #print(f'{line} -> {s}')
-    #print(f'{len(s)} * {row_num}')
+    # print(f'{line} -> {s}')
+    # print(f'{len(s)} * {row_num}')
     sum += len(s3) * row_num
 print(sum)

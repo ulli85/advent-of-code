@@ -18,14 +18,16 @@ NDPL = {'7': [0, 0], '8': [0, 1], '9': [0, 2],
         }
 
 ARROWS = {
-    'AA': '', 'A<': 'v<<', 'Av': ['v<', '<v'], 'A>': 'v', 'A^': '<',
+    'AA': '', 'A<': ['v<<', '<v<'], 'Av': ['v<', '<v'], 'A>': 'v', 'A^': '<',
     '^^': '', '^A': '>', '^v': 'v', '^<': 'v<', '^>': ['>v', 'v>'],
     '<<': '', '<A': ['>>^', '>^>'], '<v': '>', '<^': '>^', '<>': '>>',
     '>>': '', '>A': '^', '>v': '<', '>^': ['^<', '<^'], '><': '<<',
     'vv': '', 'v<': '<', 'v>': '>', 'v^': '^', 'vA': ['>^', '^>']}
 
+ALL_PATHS = set()
 
-def numeric_path(start, row):
+
+def numeric_path(start, row) -> [str]:
     s_pos = NDPL[start]
     e_pos = NDPL[row[0]]
 
@@ -36,51 +38,49 @@ def numeric_path(start, row):
     leftright = '<' if dx < 0 else '>'
     updown = 'v' if dy > 0 else '^'
     if char is None:
-        return leftright * abs(dx) + updown * abs(dy)
-    return updown * abs(dy) + leftright * abs(dx)
+        return [leftright * abs(dx) + updown * abs(dy)]
+
+    char = NDPL_ARR[s_pos[0]][s_pos[1] + dx]
+    if char is None:
+        return [updown * abs(dy) + leftright * abs(dx)]
+
+    return [leftright * abs(dx) + updown * abs(dy), updown * abs(dy) + leftright * abs(dx)]
 
 
-def arrow_path(start, row):
+def arrow_path(start, row) -> [str]:
     mv = ARROWS[start + row[0]]
-
-    if type(mv) is str: return mv
-
-    # last character, it doesn't matter what we pick up
-    if len(row) == 1: return mv[0]
-    # 'mv' is an array so we have more possibilities,
-    # we need to lookup further at row to pick up optimal solution for shorther path
-
-    path = mv[0]
-    for case in mv:
-        if case[-1] == row[1]:
-            path = case
-            break
-    return path
+    if type(mv) is str: return [mv]
+    return mv
 
 
-def next_path(start: str, row: str, disp: Display) -> str:
+def next_path(start: str, row: str, disp: Display) -> [str]:
     if Display.NUMERIC == disp:
-        return numeric_path(start, row) + 'A'
-    return arrow_path(start, row) + 'A'
+        return numeric_path(start, row)
+    return arrow_path(start, row)
 
 
-def transform(start: str, row: str, result: str = '', disp: Display = Display.NUMERIC) -> str:
-    if len(row) == 0: return result
-    return transform(row[0], row[1:], result + next_path(start, row, disp), disp)
+def transform(start: str, row: str, disp: Display = Display.NUMERIC, result: str = ''):
+    if len(row) == 0:
+        ALL_PATHS.add(result)
+        return
+    for path in next_path(start, row, disp):
+        transform(row[0], row[1:], disp, result + path + 'A')
 
 
 lines = open("input/21-1.txt").read().splitlines()
 sum = 0
 for line in lines:
-    s1 = transform('A', line)
-    s2 = transform('A', s1, '', Display.ARROW)
-    s3 = transform('A', s2, '', Display.ARROW)
+    ALL_PATHS.clear()
+    transform('A', line)
+    for a in 0, 1:
+        paths = list(ALL_PATHS)
+        ALL_PATHS.clear()
+        for path in paths:
+            transform('A', path, Display.ARROW)
+
+    min_path = min(ALL_PATHS, key=len)
     row_num = int(line[0:len(line) - 1])
-    print(s3)
-    print(s2)
-    print(s1)
-    print(line)
-    # print(f'{line} -> {s}')
-    # print(f'{len(s)} * {row_num}')
-    sum += len(s3) * row_num
+    print(f'{line} {min_path}\n {len(min_path)} * {row_num}')
+    #print(ALL_PATHS)
+    sum += len(min_path) * row_num
 print(sum)

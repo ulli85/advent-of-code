@@ -109,7 +109,7 @@ for line in lines:
             shortest = len(s1)
             shortest_path = path
     s1 = shortest_path
-    s2 = transform('A', '^A<<^^A>>AvvvA')
+    s2 = transform('A', s1)
     s3 = transform('A', s2)
     row_num = int(line[0:len(line) - 1])
     print(f'{s3} {len(s3)}')

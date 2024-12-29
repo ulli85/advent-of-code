@@ -27,35 +27,58 @@ ARROWS = {
 
 
 def numeric_path(start, row, out):
+    if start == row[0]: return out
+
     ay, ax = NDPL[start]  # actual y,x
     ey, ex = NDPL[row[0]]  # end y, x
-    dy = ey - ay
-    dx = ex - ax
+    dy, dx = ey - ay, ex - ax
+
+    # directions neccessary to go
     leftright = '<' if dx < 0 else '>'
     updown = 'v' if dy > 0 else '^'
 
-    # first row position is a gap, we need change column first and then row
-    if NDPL_ARR[ay + dy][ax] is None:
-        return leftright * abs(dx) + updown * abs(dy)
+    if dy == 0: return out + leftright * abs(dx)
+    if dx == 0: return out + updown * abs(dy)
 
-    # column position is a gap, we need change row first and then column
-    if NDPL_ARR[ay][ax + dx] is None:
-        return updown + abs(dy) + leftright * abs(dx)
+    # we continue in last direction, second rightmost character in out string, the rightmost is 'A' character
+    ld = None
+    if len(out) > 1: ld = out[-2]
+    if ld == leftright:
+        if ld == '>':
+            return numeric_path(NDPL_ARR[ay][ax + abs(dx)], row, out + '>' * abs(dx))
+        if ld == '<':
+            # cannot go through the gap
+            if start == 'A': return numeric_path('0', row, out + '<')
+            if start == '0': return numeric_path('2', row, out + '^')
+        return numeric_path(NDPL_ARR[ay][ax - abs(dx)], row, out + '<' * abs(dx))
 
-    # for all other cases wee need to find out if is better to change column first and then row or otherwise
-    # change row first and then the column
-    # for both possibilities we do calculations. Based on this we choose the 'more perspective' one then
-    # check if last output element is the same as first one of transition string which would be appended to the output
-    # todo todo todo lada
-
+    if ld == updown:
+        if ld == '^':
+            return numeric_path(NDPL_ARR[ay - abs(dy)][ax], row, out + '^' * abs(dy))
+        if ld == 'v':
+            # cannot go through the gap
+            if start == '7': return numeric_path('4', row, out + 'v')
+            if start == '4': return numeric_path('1', row, out + 'v')
+            if start == '1': return numeric_path('2', row, out + '>')
+        return numeric_path(NDPL_ARR[ay + abs(dy)][ax], row, out + 'v' * abs(dy))
+    # it's first run (first number of the sequence) and we do not have last direction yet, so we check the position
+    # of the next number and plan transition so that, by the next number we could continue with the last direction used
+    # by this number
+    nnum = row[1]
+    nny, nnx = NDPL[nnum]
+    ndy, ndx = nny - ey, nnx - ex
+    # directions neccessary to go to the next number
+    nlright = '<' if ndx < 0 else '>'
+    if nlright == leftright: return abs(dx) * leftright + abs(dy) * updown
+    if leftright == '<': return leftright * abs(dx) + updown * abs(dy)
     return updown * abs(dy) + leftright * abs(dx)
 
 
-def arrow_path(start, row, out):
+def arrow_path(start, row, out) -> str:
     mv = ARROWS[start + row[0]]
 
     # one possibility of transition from start to row[0]
-    if type(mv) is str: return mv
+    if type(mv) is str: return out + mv
 
     # 'mv' is an array with exactly two possibilities of transition
     # its length are the same, but the cost of transitions in next step could be different
@@ -87,10 +110,10 @@ def arrow_path(start, row, out):
         else:
             distance1 = len(next[0])
     # comparing 'perspectivness' of possibilities and return the probably better one
-    if score1 > score0: return mv[1]
-    if distance1 < distance0: return mv[1]
-    if mv[1].find('<<') >= 0 or mv[1].find('>>') >= 0: return mv[1]
-    return mv[0]
+    if score1 > score0: return out + mv[1]
+    if distance1 < distance0: return out + mv[1]
+    if mv[1].find('<<') >= 0 or mv[1].find('>>') >= 0: return out + mv[1]
+    return out + mv[0]
 
 
 def next_path(start: str, row: str, out, disp: Display) -> str:
@@ -101,7 +124,7 @@ def next_path(start: str, row: str, out, disp: Display) -> str:
 
 def transform(start: str, row: str, disp: Display = Display.NUMERIC, out: str = '') -> str:
     if len(row) == 0: return out
-    out += next_path(start, row, out, disp)
+    out = next_path(start, row, out, disp)
     return transform(row[0], row[1:], disp, out)
 
 
@@ -110,7 +133,7 @@ sum = 0
 for line in lines:
     s1 = transform('A', line)
     assert '^A<<^^A>>AvvvA' == s1
-    s2 = transform('A', s1, Display.ARROW)
+    s2 = transform('A', '^A<<^^A>>AvvvA', Display.ARROW)
     s3 = transform('A', s2, Display.ARROW)
     row_num = int(line[0:len(line) - 1])
     print(f'{s3} {len(s3)}')

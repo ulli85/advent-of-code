@@ -1,11 +1,3 @@
-from enum import Enum
-
-
-class Display(Enum):
-    NUMERIC = 1,
-    ARROW = 2
-
-
 NDPL_ARR = [['7', '8', '9'],
             ['4', '5', '6'],
             ['1', '2', '3'],
@@ -25,53 +17,27 @@ ARROWS = {
     '>>': '', '>A': '^', '>v': '<', '>^': ['^<', '<^'], '><': '<<',
     'vv': '', 'v<': '<', 'v>': '>', 'v^': '^', 'vA': ['>^', '^>']}
 
+ALL_PATHS = set()
 
-def numeric_path(start, row, out):
-    if start == row[0]: return out
 
-    ay, ax = NDPL[start]  # actual y,x
-    ey, ex = NDPL[row[0]]  # end y, x
-    dy, dx = ey - ay, ex - ax
+def numeric_path(start, row):
+    s_pos = NDPL[start]
+    e_pos = NDPL[row[0]]
 
-    # directions neccessary to go
+    dy = e_pos[0] - s_pos[0]
+    dx = e_pos[1] - s_pos[1]
+
+    char = NDPL_ARR[s_pos[0] + dy][s_pos[1]]
     leftright = '<' if dx < 0 else '>'
     updown = 'v' if dy > 0 else '^'
+    if char is None:
+        return [leftright * abs(dx) + updown * abs(dy)]
 
-    if dy == 0: return out + leftright * abs(dx)
-    if dx == 0: return out + updown * abs(dy)
+    char = NDPL_ARR[s_pos[0]][s_pos[1] + dx]
+    if char is None:
+        return [updown * abs(dy) + leftright * abs(dx)]
 
-    # we continue in last direction, second rightmost character in out string, the rightmost is 'A' character
-    ld = None
-    if len(out) > 1: ld = out[-2]
-    if ld == leftright:
-        if ld == '>':
-            return numeric_path(NDPL_ARR[ay][ax + abs(dx)], row, out + '>' * abs(dx))
-        if ld == '<':
-            # cannot go through the gap
-            if start == 'A': return numeric_path('0', row, out + '<')
-            if start == '0': return numeric_path('2', row, out + '^')
-        return numeric_path(NDPL_ARR[ay][ax - abs(dx)], row, out + '<' * abs(dx))
-
-    if ld == updown:
-        if ld == '^':
-            return numeric_path(NDPL_ARR[ay - abs(dy)][ax], row, out + '^' * abs(dy))
-        if ld == 'v':
-            # cannot go through the gap
-            if start == '7': return numeric_path('4', row, out + 'v')
-            if start == '4': return numeric_path('1', row, out + 'v')
-            if start == '1': return numeric_path('2', row, out + '>')
-        return numeric_path(NDPL_ARR[ay + abs(dy)][ax], row, out + 'v' * abs(dy))
-    # it's first run (first number of the sequence) and we do not have last direction yet, so we check the position
-    # of the next number and plan transition so that, by the next number we could continue with the last direction used
-    # by this number
-    nnum = row[1]
-    nny, nnx = NDPL[nnum]
-    ndy, ndx = nny - ey, nnx - ex
-    # directions neccessary to go to the next number
-    nlright = '<' if ndx < 0 else '>'
-    if nlright == leftright: return abs(dx) * leftright + abs(dy) * updown
-    if leftright == '<': return leftright * abs(dx) + updown * abs(dy)
-    return updown * abs(dy) + leftright * abs(dx)
+    return [leftright * abs(dx) + updown * abs(dy), updown * abs(dy) + leftright * abs(dx)]
 
 
 def arrow_path(start, row, out) -> str:
@@ -116,25 +82,35 @@ def arrow_path(start, row, out) -> str:
     return out + mv[0]
 
 
-def next_path(start: str, row: str, out, disp: Display) -> str:
-    if Display.NUMERIC == disp:
-        return numeric_path(start, row, out) + 'A'
-    return arrow_path(start, row, out) + 'A'
-
-
-def transform(start: str, row: str, disp: Display = Display.NUMERIC, out: str = '') -> str:
+def transform(start, row: str, out: str = '') -> str:
     if len(row) == 0: return out
-    out = next_path(start, row, out, disp)
-    return transform(row[0], row[1:], disp, out)
+    out = arrow_path(start, row, out) + 'A'
+    return transform(row[0], row[1:], out)
+
+
+def transform_numeric_brutal_force(start: str, row: str, out: str = ''):
+    if len(row) == 0:
+        ALL_PATHS.add(out)
+        return
+    for path in numeric_path(start, row):
+        transform_numeric_brutal_force(row[0], row[1:], out + path + 'A')
 
 
 lines = open("input/21-1.txt").read().splitlines()
 sum = 0
 for line in lines:
-    s1 = transform('A', line)
-    assert '^A<<^^A>>AvvvA' == s1
-    s2 = transform('A', '^A<<^^A>>AvvvA', Display.ARROW)
-    s3 = transform('A', s2, Display.ARROW)
+    ALL_PATHS.clear()
+    transform_numeric_brutal_force('A', line)
+    shortest = 99999999
+    shortest_path = ''
+    for path in list(ALL_PATHS):
+        s1 = transform('A', path)
+        if len(s1) < shortest:
+            shortest = len(s1)
+            shortest_path = path
+    s1 = shortest_path
+    s2 = transform('A', '^A<<^^A>>AvvvA')
+    s3 = transform('A', s2)
     row_num = int(line[0:len(line) - 1])
     print(f'{s3} {len(s3)}')
     print(s2)

@@ -1,8 +1,6 @@
 from collections import deque
 
 maze = open("input/20-1.txt").read().splitlines()
-cols = len(maze)
-rows = len(maze[0])
 cheats = {}
 
 

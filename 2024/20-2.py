@@ -16,8 +16,7 @@ def dist(a: tuple[int, int, int, tuple[...] | None], b: tuple[int, int, int, tup
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
-def adjacents(path: [tuple[int, int, int, tuple[...] | None]], index: int, radius: int) -> [
-    tuple[int, int, int, tuple[...] | None]]:
+def adjacents(path: [tuple[int, int, int, tuple[...] | None]], index: int, radius: int) -> [tuple[int, int, int, tuple[...] | None]]:
     a = path[index]
     return list(filter(lambda b: b[2] > a[2] and dist(a, b) <= radius, path))
 

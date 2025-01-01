@@ -1,7 +1,5 @@
 from collections import deque
 
-import numpy as np
-
 maze = open("input/20-1.txt").read().splitlines()
 cols = len(maze)
 rows = len(maze[0])
@@ -67,6 +65,4 @@ def cheat(path: [], start: int, radius: int):
 
 path = bfs(start_pos())
 for i in range(len(path)): cheat(path, i, 20)
-print(len(list(filter(lambda x: x >=100, cheats.values()))))
-
-
+print(len(list(filter(lambda x: x >= 100, cheats.values()))))

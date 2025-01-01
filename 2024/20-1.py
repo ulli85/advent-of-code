@@ -58,13 +58,14 @@ def cheat(path: [], visited: {}, start: int):
                 node = visited[nr, nc]
                 actual_picosecs, node_picosecs = actual[2], node[2]
                 if node_picosecs > actual_picosecs + x:
-
                     cheat_ident = [(r + dr * k, c + dc * k) for k in range(1, x) if maze[r + dr * k][c + dc * k] == '#']
                     cheat_ident = tuple(sum(cheat_ident, ()))
+                    known_cheat_size = -1
                     if cheat_ident in cheats:
                         print('Cheat already used')
+                        known_cheat_size = cheats[cheat_ident]
                     size_of_cheat = node_picosecs - (actual_picosecs + x)
-                    cheats[cheat_ident] = size_of_cheat
+                    cheats[cheat_ident] = max(known_cheat_size, size_of_cheat)
                     print(f'Cheat found by {(r, c)}, Cheat len: {x}, Size: {size_of_cheat}')
                     break
 
@@ -79,3 +80,8 @@ visited = {(value[0], value[1]): value for value in path}
 cheats = {}
 for i in range(len(path)):
     cheat(path, visited, i)
+
+print(len(list(filter(lambda x: x >=100, cheats.values()))))
+#print(sorted(cheats.values()))
+
+

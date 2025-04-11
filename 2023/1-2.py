@@ -7,4 +7,4 @@ def rplce2dgits(line: str) -> str:
 
     return line
 
-print(sum(list(map(lambda numbers: int(numbers[0] + numbers[-1]), map(lambda line: re.findall('\\d', line), list(map(lambda line: rplce2dgits(line), open("input/1", "r").read().splitlines())))))))
+print(sum(list(map(lambda numbers: int(numbers[0] + numbers[-1]), map(lambda line: re.findall('\\d', line), list(map(lambda line: rplce2dgits(line), open("input/1").read().splitlines())))))))

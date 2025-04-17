@@ -1,7 +1,6 @@
 import re
 
 num_or_dot = {str(i) for i in range(0, 10)}.union({'.'})
-
 data = open("input/3").read().splitlines()
 suma = 0
 for y, line in enumerate(data):
@@ -16,6 +15,5 @@ for y, line in enumerate(data):
             coords.add((y_dwn, i))
         last_index += len(num)
         adjacent_symbols = list(filter(lambda c: data[c[0]][c[1]] not in num_or_dot, coords))
-        adjacent_symbol = len(adjacent_symbols) > 0
-        if adjacent_symbol: suma += int(num)
+        if len(adjacent_symbols) > 0: suma += int(num)
 print(suma)

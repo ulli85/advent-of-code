@@ -1,3 +1,3 @@
-# aoc2024
+# Advent of Code
 
-My tries of solution for https://adventofcode.com/ year 2024
+I hardly try to solve puzzles at https://adventofcode.com/

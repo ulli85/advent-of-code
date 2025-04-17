@@ -26,7 +26,7 @@ for y, line in enumerate(data):
         coords.remove((y, last_index))
         last_index += 1
 
-        digit_coords = sorted(list(filter(lambda c: data[c[0]][c[1]].isnumeric(), coords)))
+        digit_coords = list(filter(lambda c: data[c[0]][c[1]].isnumeric(), coords))
 
         if len(digit_coords) > 1:
             numbers = []

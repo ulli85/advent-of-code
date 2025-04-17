@@ -6,36 +6,28 @@ used_coords = set()
 
 def get_row_num(y_coord: int, x_coord: int) -> int:
     xst = x_coord
-    while xst > 0:
-        if data[y_coord][xst - 1].isnumeric():
-            xst -= 1
-        else: break
-    xst = max(0, xst)
+    while xst > 0 and data[y_coord][max(0, xst - 1)].isnumeric(): xst -= 1
     result = []
-    while xst < len(data[y]):
-        char = data[y_coord][xst]
-        if char.isnumeric():
-            result.append(data[y_coord][xst])
-            used_coords.add((y_coord, xst))
-        else:
-            break
+    while xst < len(data[y]) and data[y_coord][xst].isnumeric():
+        result.append(data[y_coord][xst])
+        used_coords.add((y_coord, xst))
         xst += 1
-
     return int(''.join(result))
 
-num_set = {str(i) for i in range(0, 10)}
 suma = 0
 for y, line in enumerate(data):
     last_index = 0
     while last_index < len(data[y]):
         last_index = line.find('*', last_index)
         if last_index == -1: break
-        y_up, y_dwn = max(0, y - 1), min(len(data) - 1, y + 1)
         xs, xe = max(0, last_index - 1), min(len(line) - 1, last_index + 1)
-        last_index += 1
         cols = [i for i in range(xs, xs + (xe - xs) + 1)]
-        coords = {(y, xs), (y, xe)}.union(product([y_up], cols)).union(product([y_dwn], cols))
-        digit_coords = sorted(list(filter(lambda c: data[c[0]][c[1]] in num_set, coords)))
+        coords = {*product([max(0, y - 1), y, min(len(data) - 1, y + 1)], cols)}
+        coords.remove((y, last_index))
+        last_index += 1
+
+        digit_coords = sorted(list(filter(lambda c: data[c[0]][c[1]].isnumeric(), coords)))
+
         if len(digit_coords) > 1:
             numbers = []
             for digit_coord in digit_coords:

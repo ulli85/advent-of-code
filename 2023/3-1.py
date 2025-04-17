@@ -1,7 +1,6 @@
 import re
 
-num_or_dot = {str(i) for i in range(0, 10)}
-num_or_dot.add('.')
+num_or_dot = {str(i) for i in range(0, 10)}.union({'.'})
 
 data = open("input/3").read().splitlines()
 suma = 0

@@ -1,9 +1,10 @@
 import math
 import re
 
-data = map(lambda x: re.fullmatch('^Card\\s+\\d+:\\s+(?P<winning_numbers>.*)\\|\\s+(?P<mine_numbers>.*)$', x), open("input/4").read().splitlines())
+data = open("input/4").read().splitlines()
+matches = map(lambda x: re.fullmatch('^Card\\s+\\d+:\\s+(?P<winning_nums>.*)\\|\\s+(?P<mine_nums>.*)$', x), data)
 suma = 0
-for game in data:
-    matched_numbers = {*game.group('winning_numbers').split()}.intersection({*game.group('mine_numbers').split()})
+for match in matches:
+    matched_numbers = {*match.group('winning_nums').split()}.intersection({*match.group('mine_nums').split()})
     suma += int(math.pow(2, len(matched_numbers) - 1))
 print(suma)

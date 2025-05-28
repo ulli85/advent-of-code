@@ -50,9 +50,6 @@ class CardHand:
                 return CardHand.CARD_STRENGTH[self.cards[j]] < CardHand.CARD_STRENGTH[other.cards[j]]
         return self.poker_type.value < other.poker_type.value
 
-    def __str__(self):
-        return f'{self.poker_type}, {self.cards}, {self.bid}'
-
 
 lines = open('input/7').read().splitlines()
 card_hands = list(map(lambda arr: CardHand(*arr), map(lambda l: [l.split()[0], int(l.split()[1])], lines)))

@@ -1,5 +1,4 @@
 from collections import Counter
-from collections import defaultdict
 from enum import Enum
 
 
@@ -34,7 +33,6 @@ class PokerTypes(Enum):
 
 
 class CardHand:
-    ALL_CARDS = defaultdict(list)
     CARD_STRENGTH = {'A': 100, 'K': 99, 'Q': 98, 'J': 97, 'T': 96, '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4,
                      '3': 3, '2': 2, '1': 1, '0': 0}
 

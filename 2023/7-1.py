@@ -33,8 +33,7 @@ class PokerTypes(Enum):
 
 
 class CardHand:
-    CARD_STRENGTH = {'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9,
-                     '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2}
+    CARD_STRENGTH = {'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2}
 
     def __init__(self, cards: str, bid: int):
         self.cards = cards
@@ -50,6 +49,9 @@ class CardHand:
                 if self.cards[j] == other.cards[j]: continue
                 return CardHand.CARD_STRENGTH[self.cards[j]] < CardHand.CARD_STRENGTH[other.cards[j]]
         return self.poker_type.value < other.poker_type.value
+
+    def __str__(self):
+        return f'{self.poker_type}, {self.cards}, {self.bid}'
 
 
 lines = open('input/7').read().splitlines()

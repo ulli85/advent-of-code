@@ -61,5 +61,4 @@ cards_total = len(card_hands)
 prize = 0
 for i, card_hand in enumerate(sorted(card_hands)):
     prize += card_hand.bid * (i + 1)
-    # print(str(card_hand))
 print(prize)

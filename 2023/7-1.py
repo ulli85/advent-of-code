@@ -56,17 +56,6 @@ class CardHand:
     def __str__(self):
         return f'{self.poker_type}, {self.cards}, {self.bid}'
 
-    def is_same(self, other: 'CardHand') -> bool:
-        return self.cards == other.cards
-
-    def is_higher(self, other: 'CardHand') -> bool:
-        if self.is_same(other): return False;
-        if self.poker_type == other.poker_type:
-            for i in range(len(self.cards)):
-                if ord(self.cards[i]) == ord(other.cards[i]): continue
-                return ord(self.cards[i]) > ord(other.cards[i])
-        return self.poker_type.value > other.poker_type.value
-
 
 lines = open('input/7').read().splitlines()
 card_hands = list(map(lambda arr: CardHand(*arr), map(lambda l: [l.split()[0], int(l.split()[1])], lines)))
@@ -74,5 +63,5 @@ cards_total = len(card_hands)
 prize = 0
 for i, card_hand in enumerate(sorted(card_hands)):
     prize += card_hand.bid * (i + 1)
-    #print(str(card_hand))
+    # print(str(card_hand))
 print(prize)

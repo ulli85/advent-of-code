@@ -6,15 +6,15 @@ instructions = lines[0]
 network = {k: v for k, v in
            list(map(lambda a: (a[0], {'L': a[1], 'R': a[2]}), map(lambda line: re.findall('\\w{3}', line), lines[2:])))}
 
-nows = list(filter(lambda n: n[-1] == 'A', network.keys()))
+nodes = list(filter(lambda n: n[-1] == 'A', network.keys()))
 steps = []
 
-for i, now in enumerate(nows):
+for i, node in enumerate(nodes):
     step = 0
-    while now[-1] != 'Z':
+    while node[-1] != 'Z':
         direction = instructions[step % len(instructions)]
-        next_nodes = network[now]
-        now = next_nodes[direction]
+        node_list = network[node]
+        node = node_list[direction]
         step += 1
     steps += [step]
 print (math.lcm(*steps))

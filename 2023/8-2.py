@@ -17,4 +17,4 @@ for i, node in enumerate(nodes):
         node = node_list[direction]
         step += 1
     steps += [step]
-print (math.lcm(*steps))
+print(math.lcm(*steps))

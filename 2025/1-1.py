@@ -1,5 +1,4 @@
 lines = open('input/1-1.txt').read().splitlines()
-print(lines)
 
 v = 50
 sum_zeros = 0

@@ -24,10 +24,9 @@ for seq in sequences:
             suma += i
             continue
         lh = len(nms) // 2
-        for j in range(1, (lh + len(nms) % 2) + 1):
+        for j in range(2, (lh + len(nms) % 2) + 1):
             rpr = check_repetition(j, nms)
             if rpr > 0:
-                if rpr >= 11:
-                    suma += rpr
+                suma += rpr
                 break
 print(suma)

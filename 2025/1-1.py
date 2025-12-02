@@ -1,4 +1,4 @@
-lines = open('input/1-1.txt').read().splitlines()
+lines = open('input/1.txt').read().splitlines()
 
 v = 50
 sum_zeros = 0

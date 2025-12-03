@@ -1,5 +1,4 @@
 banks = open('input/3.txt').read().splitlines()
-print(banks)
 sum_banks = 0
 
 for joltage in banks:
@@ -10,4 +9,3 @@ for joltage in banks:
             max_voltage = max(max_voltage, v)
     sum_banks += max_voltage
 print(sum_banks)
-

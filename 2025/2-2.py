@@ -2,17 +2,14 @@ from collections import Counter
 
 sequences = open('input/2.txt').read().replace('\n', '').split(',')
 
-def check_repetition(digit_count:int, number:str)->int:
-    totalln = len(number)
-    times = totalln // digit_count
-    if times * digit_count < totalln:
+def check_repetition(digit_count: int, number: str) -> int:
+    if len(number) % digit_count != 0:
         return 0
     arr = number.split(number[0:digit_count])
     for item in arr:
         if len(item) > 0:
             return 0
     return int(number)
-
 
 suma = 0
 for seq in sequences:

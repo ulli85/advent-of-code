@@ -1,8 +1,7 @@
 data = open('input/5.txt').read().splitlines()
-rng = list(map(lambda x: list(map(int, x.split('-'))), data[0: data.index('')]))
+rng = sorted(list(map(lambda x: list(map(int, x.split('-'))), data[0: data.index('')])), key=lambda x: x[0])
 
 interchange = True
-rng = sorted(rng, key=lambda x: x[0])
 while interchange:
     interchange = False
     for i in range(0, len(rng) - 1):

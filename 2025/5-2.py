@@ -1,17 +1,16 @@
 data = open('input/5.txt').read().splitlines()
-ranges = list(map(lambda x: list(map(int, x.split('-'))), data[0: data.index('')]))
+rng = list(map(lambda x: list(map(int, x.split('-'))), data[0: data.index('')]))
 
 interchange = True
-arr = ranges[:]
-arr = sorted(arr, key=lambda x: x[0])
+rng = sorted(rng, key=lambda x: x[0])
 while interchange:
     interchange = False
-    for i in range(0, len(arr) - 1):
-        if arr[i][1] >= arr[i + 1][0]:
-            new_range = [arr[i][0], max(arr[i][1], arr[i + 1][1])]
-            arr = arr[0:i] + [new_range] + arr[i + 2:]
+    for i in range(0, len(rng) - 1):
+        if rng[i][1] >= rng[i + 1][0]:
+            new_range = [rng[i][0], max(rng[i][1], rng[i + 1][1])]
+            rng = rng[0:i] + [new_range] + rng[i + 2:]
             interchange = True
             break
 
-result = sum(map(lambda x: x[1] - x[0] + 1, arr))
+result = sum(map(lambda x: x[1] - x[0] + 1, rng))
 print(result)

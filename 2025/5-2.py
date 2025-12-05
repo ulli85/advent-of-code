@@ -1,6 +1,5 @@
 data = open('input/5.txt').read().splitlines()
 rng = sorted(list(map(lambda x: list(map(int, x.split('-'))), data[0: data.index('')])), key=lambda x: x[0])
-res = []
 i = 0
 while i < len(rng) - 1:
     if rng[i][1] >= rng[i + 1][0]:

@@ -39,7 +39,6 @@ suma = 0
 operations = data[-1].replace(' ', '')[:]
 for i, operands in enumerate(formulas):
     op = operations[i]
-    operands = filter(lambda x: x != '', operands)
     res = eval(op.join(operands))
     suma += res
 print(suma)

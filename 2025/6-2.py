@@ -36,9 +36,9 @@ for c in range(pos, len(dp[0])):
     formulas += [operands]
 
 suma = 0
-operations = data[-1].replace(' ', '')[:]
+operators = data[-1].replace(' ', '')[:]
 for i, operands in enumerate(formulas):
-    op = operations[i]
-    res = eval(op.join(operands))
+    operator = operators[i]
+    res = eval(operator.join(operands))
     suma += res
 print(suma)

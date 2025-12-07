@@ -6,7 +6,7 @@ width = len(grid[0])
 beams = [0] * width
 beams[s] = 1
 
-for i, r in enumerate(grid[1:], 1):
+for r in grid[1:]:
     beams_n = [0] * width
     for k, b in enumerate(beams):
         if beams[k] == 0: continue

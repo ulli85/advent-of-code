@@ -1,4 +1,4 @@
-grid = list(map(list, open('input/7.txt').read().splitlines()))
+grid = open('input/7.txt').read().splitlines()
 
 s = grid[0].index('S')
 width = len(grid[0])

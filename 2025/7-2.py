@@ -17,7 +17,7 @@ for i, r in enumerate(grid[1:], 1):
             beams_n[k + 1] = beams[k]
             beams_n[k - 1] = beams[k] + beams[k - 1]
             if r[k - 2] == '^':
-                beams_n[k - 1] = beams_n[k - 1] + beams[k - 2]
+                beams_n[k - 1] += beams[k - 2]
         else:
             beams_n[k] += beams[k]
     beams = beams_n

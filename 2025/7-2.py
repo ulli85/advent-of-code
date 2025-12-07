@@ -1,10 +1,7 @@
-import numpy as np
+grid = list(map(list, open('input/7.txt').read().splitlines()))
 
-data = open('input/7.txt').read().splitlines()
-grid = list(map(list, data))
-
-s = data[0].index('S')
-width = len(data[0])
+s = grid[0].index('S')
+width = len(grid[0])
 
 beams = [0] * width
 beams[s] = 1

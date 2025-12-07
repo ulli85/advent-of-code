@@ -1,8 +1,7 @@
-data = open('input/7.txt').read().splitlines()
-grid = list(map(list, data))
+grid = list(map(list, open('input/7.txt').read().splitlines()))
 
-s = data[0].index('S')
-width = len(data[0])
+s = grid[0].index('S')
+width = len(grid[0])
 
 beams = [0] * width
 beams[s] = 1

@@ -21,5 +21,4 @@ for i, r in enumerate(grid[1:], 1):
         else:
             beams_n[k] += beams[k]
     beams = beams_n
-    print('  '.join(map(str, beams_n)))
 print(sum(beams))

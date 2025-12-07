@@ -12,9 +12,7 @@ for i, r in enumerate(grid[1:], 1):
         if beams[k] == 0: continue
         if r[k] == '^':
             beams_n[k + 1] = beams[k]
-            beams_n[k - 1] = beams[k] + beams[k - 1]
-            if r[k - 2] == '^':
-                beams_n[k - 1] += beams[k - 2]
+            beams_n[k - 1] = beams[k] + beams[k - 1] + (beams[k - 2] if r[k - 2] == '^' else 0)
         else:
             beams_n[k] += beams[k]
     beams = beams_n

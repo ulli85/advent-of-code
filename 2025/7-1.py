@@ -4,7 +4,7 @@ grid = list(map(list, data))
 s = data[0].index('S')
 width = len(data[0])
 
-beams, beams_n, paths = [0] * width, [0] * width, [0] * width
+beams = [0] * width
 beams[s] = 1
 
 total = 0

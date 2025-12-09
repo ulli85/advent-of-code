@@ -7,14 +7,15 @@ def distance(c1, c2):
 
 
 data = list(map(lambda x: tuple(map(int, x.split(','))), open('input/8.txt').read().splitlines()))
-COORD_2_DIST = {}
-DISTANCES_SORTED = {}
+DISTANCES = {}
 
 for k in data:
     for j in data:
-        if k != j and (k, j) not in DISTANCES_SORTED and (j, k) not in DISTANCES_SORTED:
-            DISTANCES_SORTED[(k, j)] = distance(k, j)
-DISTANCES_SORTED = {k: v for k, v in sorted(DISTANCES_SORTED.items(), key=lambda item: item[1])}
+        if k != j and (k, j) not in DISTANCES and (j, k) not in DISTANCES:
+            DISTANCES[(k, j)] = distance(k, j)
+
+
+DISTANCES_SORTED = {k: v for k, v in sorted(DISTANCES.items(), key=lambda item: item[1])}
 COORD_2_GRP_ID = dict(zip(data, [i for i in range(0, len(data))]))
 GRP_ID_2_COORDS = dict(zip([i for i in range(0, len(data))], [set() for i in range(0, len(data))]))
 connection_limit = 1000

@@ -14,7 +14,6 @@ for k in data:
         if k != j and (k, j) not in DISTANCES and (j, k) not in DISTANCES:
             DISTANCES[(k, j)] = distance(k, j)
 
-
 DISTANCES_SORTED = {k: v for k, v in sorted(DISTANCES.items(), key=lambda item: item[1])}
 COORD_2_GRP_ID = dict(zip(data, [i for i in range(0, len(data))]))
 GRP_ID_2_COORDS = dict(zip([i for i in range(0, len(data))], [set() for i in range(0, len(data))]))
@@ -39,7 +38,7 @@ while actual_connection < connection_limit:
     united_groups = group1.union(group2)
     GRP_ID_2_COORDS[gr_id1] = united_groups
     GRP_ID_2_COORDS.pop(gr_id2)
-    #print(list(sorted(filter(lambda g: g > 0, map(len, GRP_ID_2_COORDS.values())), reverse=True)))
+    # print(list(sorted(filter(lambda g: g > 0, map(len, GRP_ID_2_COORDS.values())), reverse=True)))
 
 res = list(sorted(filter(lambda g: g > 0, map(len, GRP_ID_2_COORDS.values())), reverse=True))
 # print(res)

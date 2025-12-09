@@ -39,7 +39,7 @@ while actual_connection < connection_limit:
     united_groups = group1.union(group2)
     GRP_ID_2_COORDS[gr_id1] = united_groups
     GRP_ID_2_COORDS.pop(gr_id2)
-    print(list(sorted(filter(lambda g: g > 0, map(len, GRP_ID_2_COORDS.values())), reverse=True)))
+    #print(list(sorted(filter(lambda g: g > 0, map(len, GRP_ID_2_COORDS.values())), reverse=True)))
 
 res = list(sorted(filter(lambda g: g > 0, map(len, GRP_ID_2_COORDS.values())), reverse=True))
 # print(res)

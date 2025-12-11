@@ -17,7 +17,7 @@ for i, line in enumerate(lines):
 
     A_eq = list(zip(*A_eq))
     problem = pulp.LpProblem("AOC_10_2", pulp.LpMinimize)
-    variables = [pulp.LpVariable(f'x{i}', lowBound=0, upBound=max(B_eq), cat='Integer') for i in range(len(A_eq[0]))]
+    variables = [pulp.LpVariable(f'x{i}', lowBound=0, cat='Integer') for i in range(len(A_eq[0]))]
 
     for r in range(len(A_eq)):
         _sum = []
@@ -28,8 +28,8 @@ for i, line in enumerate(lines):
         problem += constraint == B_eq[r], f"Row_{r}"
     problem.solve()
 
-    if pulp.LpStatus[problem.status] == 'Optimal':
-        s = list(int(pulp.value(var)) for var in variables)
-        print(s)
-        all_clicks += sum(s)
+    assert pulp.LpStatus[problem.status] == 'Optimal'
+    s = list(int(pulp.value(var)) for var in variables)
+    #print(s)
+    all_clicks += sum(s)
 print(all_clicks)

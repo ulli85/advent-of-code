@@ -40,7 +40,7 @@ def dfs_go(path: [tuple]):
         paths.add(new_path)
         return dfs_go(path_next)
     else:
-        visited[dst] = True # ma to bejt tady?
+        visited[dst] = True
         dfs_go(path_next + [tuple([dst, 0])])
 
 dfs_go(([('you', 0)]))

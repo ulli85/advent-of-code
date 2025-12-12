@@ -1,15 +1,20 @@
+import sys
+
+sys.setrecursionlimit(15000)
+
 lines = list(map(lambda l: l.split(': '), open('input/11.txt').read().splitlines()))
 lines = list(map(lambda i: [i[0], tuple(i[1].split(' '))], lines))
 
 network = {k: v for k, v in lines}
 visited = {k: v for k, v in zip(network.keys(), [False] * len(network))}
 path_count = 0
-
 paths = set()
 
 def dfs_go(path: [tuple]):
     global path_count
-    if len(path) == 0: return
+
+    if len(path) == 0:
+        return
     src, index = path.pop()
     dests = network[src]
 
@@ -23,7 +28,6 @@ def dfs_go(path: [tuple]):
     path_next = path + [tuple([src, index + 1])]
 
     if cycle_detected:
-        print('Cycle detected')
         return dfs_go(path_next)
 
     if dst == 'out':
@@ -39,5 +43,5 @@ def dfs_go(path: [tuple]):
         visited[dst] = True # ma to bejt tady?
         dfs_go(path_next + [tuple([dst, 0])])
 
-dfs_go([tuple(['you', 0])])
+dfs_go(([('you', 0)]))
 print(path_count)

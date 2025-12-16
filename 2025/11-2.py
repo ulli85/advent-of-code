@@ -48,12 +48,9 @@ def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_
         start_idx = topological_sorted_graph.index(start_node)
         for node_2_dispose in topological_sorted_graph[0:start_idx]:
             network.pop(node_2_dispose)
-        topological_sorted_graph = topological_sorted_graph[start_idx:]
         end_idx = topological_sorted_graph.index(end_node)
-        if end_idx < len(topological_sorted_graph) - 1:
-            for node_2_dispose in topological_sorted_graph[end_idx + 1:]:
-                network.pop(node_2_dispose)
-            topological_sorted_graph = topological_sorted_graph[0:end_idx + 1]
+        for node_2_dispose in topological_sorted_graph[end_idx + 1:]:
+           network.pop(node_2_dispose)
 
     topological_sorted = []
     while True:
@@ -85,5 +82,5 @@ paths += [node_2_path_count[second_after_start]]
 
 topological_sort_graph(second_after_start, 'out', graph)
 paths += [node_2_path_count['out']]
-
+# result as multiplication of paths between (svr->dac) * (dac->fft * fft -> out
 print(reduce(lambda a, b: a * b, paths))

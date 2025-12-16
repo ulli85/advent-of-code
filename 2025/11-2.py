@@ -82,5 +82,5 @@ paths += [node_2_path_count[second_after_start]]
 
 topological_sort_graph(second_after_start, 'out', graph)
 paths += [node_2_path_count['out']]
-# result as multiplication of paths between (svr->dac) * (dac->fft * fft -> out
+# All possible path as multiplication of all paths between (svr->fft) * (fft->dac) * (dac->out)
 print(reduce(lambda a, b: a * b, paths))

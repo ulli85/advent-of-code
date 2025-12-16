@@ -3,25 +3,25 @@ from functools import reduce
 lines = list(map(lambda l: l.split(': '), open('input/11.txt').read().splitlines()))
 lines = list(map(lambda i: [i[0], tuple(i[1].split(' '))], lines))
 network = {}
-edges = {}
+node_2_input_nodes = {}
 node_2_path_count = {}
 
 
 def init_data():
     """Initialize all data structures"""
     global network
-    global edges
+    global node_2_input_nodes
     global node_2_path_count
     network = {k: v for k, v in lines}
-    edges = {k: v for k, v in zip(network.keys(), [[] for i in range(0, len(network.keys()))])}
+    node_2_input_nodes = {k: v for k, v in zip(network.keys(), [[] for i in range(0, len(network.keys()))])}
     network['out'] = ()
-    edges['out'] = []
+    node_2_input_nodes['out'] = []
 
     for k in network.keys():
         keys = network[k]
         for j in keys:
-            edges[j] += [k]
-    node_2_path_count = {k: v for k, v in zip(edges, [0] * len(edges))}
+            node_2_input_nodes[j] += [k]
+    node_2_path_count = {k: v for k, v in zip(node_2_input_nodes, [0] * len(node_2_input_nodes))}
 
 
 def get_root_nodes(_network):
@@ -34,7 +34,7 @@ def get_root_nodes(_network):
 
 def count_connections(root_node):
     """Count connections as sum of all input edges to root_node. Adjust dictionary node_2_path_count"""
-    for edge in edges[root_node]:
+    for edge in node_2_input_nodes[root_node]:
         conns = node_2_path_count[edge]
         node_2_path_count[root_node] += conns
 

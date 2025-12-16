@@ -17,7 +17,6 @@ def init_data():
     network['out'] = ()
     edges['out'] = []
 
-
     for k in network.keys():
         keys = network[k]
         for j in keys:
@@ -33,11 +32,11 @@ def get_root_nodes(_network):
     return tops
 
 
-def count_connections(top_node):
-    """Count connections as sum of all input edges to top_node. Adjust dictionary node_2_path_count"""
-    for edge in edges[top_node]:
+def count_connections(root_node):
+    """Count connections as sum of all input edges to root_node. Adjust dictionary node_2_path_count"""
+    for edge in edges[root_node]:
         conns = node_2_path_count[edge]
-        node_2_path_count[top_node] += conns
+        node_2_path_count[root_node] += conns
 
 
 def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_graph=[]):
@@ -56,7 +55,6 @@ def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_
                 network.pop(node_2_dispose)
             topological_sorted_graph = topological_sorted_graph[0:end_idx + 1]
 
-
     topological_sorted = []
     while True:
         tops = get_root_nodes(network)
@@ -69,7 +67,7 @@ def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_
         for top in tops:
             network.pop(top)
             count_connections(top)
-    return  topological_sorted
+    return topological_sorted
 
 
 graph = topological_sort_graph()
@@ -88,4 +86,4 @@ paths += [node_2_path_count[second_after_start]]
 topological_sort_graph(second_after_start, 'out', graph)
 paths += [node_2_path_count['out']]
 
-print(reduce(lambda a,b: a*b, paths))
+print(reduce(lambda a, b: a * b, paths))

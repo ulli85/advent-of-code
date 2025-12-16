@@ -53,17 +53,14 @@ def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_
             network.pop(node_2_dispose)
 
     topological_sorted = []
-    while True:
-        tops = get_root_nodes(network)
-
-        if len(tops) == 0:
-            break
-
+    tops = get_root_nodes(network)
+    while tops:
         topological_sorted += [*tops]
 
         for top in tops:
             network.pop(top)
             count_connections(top)
+        tops = get_root_nodes(network)
     return topological_sorted
 
 

@@ -13,8 +13,8 @@ def init_data():
     global node_2_input_nodes
     global node_2_path_count
     network = {k: v for k, v in lines}
-    node_2_input_nodes = {k: v for k, v in zip(network.keys(), [[] for i in range(0, len(network.keys()))])}
     network['out'] = ()
+    node_2_input_nodes = {k: v for k, v in zip(network.keys(), [[] for i in range(0, len(network.keys()))])}
     node_2_input_nodes['out'] = []
 
     for k in network.keys():
@@ -50,7 +50,7 @@ def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_
             network.pop(node_2_dispose)
         end_idx = topological_sorted_graph.index(end_node)
         for node_2_dispose in topological_sorted_graph[end_idx + 1:]:
-           network.pop(node_2_dispose)
+            network.pop(node_2_dispose)
 
     topological_sorted = []
     while True:

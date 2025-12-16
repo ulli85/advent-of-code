@@ -39,7 +39,7 @@ def count_connections(root_node):
         node_2_path_count[root_node] += conns
 
 
-def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_graph=[]):
+def topological_sort_graph(start_node, end_node, topological_sorted_graph=[]):
     """ A topological sort of all the nodes"""
     init_data()
     node_2_path_count[start_node] = 1
@@ -64,7 +64,7 @@ def topological_sort_graph(start_node='svr', end_node='out', topological_sorted_
     return topological_sorted
 
 
-graph = topological_sort_graph()
+graph = topological_sort_graph('svr', 'out')
 dac_index = graph.index('dac')
 fft_index = graph.index('fft')
 first_after_start = 'dac' if dac_index < fft_index else 'fft'

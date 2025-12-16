@@ -28,8 +28,8 @@ def get_root_nodes(_network):
     """Returns nodes without incoming edge (root nodes) """
     s = set(list(sum([_network[k] for k in _network.keys()], ())))
     k = set(_network.keys())
-    tops = k.difference(s)
-    return tops
+    roots = k.difference(s)
+    return roots
 
 
 def count_connections(root_node):
@@ -53,14 +53,14 @@ def topological_sort_graph(start_node, end_node, topological_sorted_graph=[]):
             network.pop(node_2_dispose)
 
     topological_sorted = []
-    tops = get_root_nodes(network)
-    while tops:
-        topological_sorted += [*tops]
+    roots = get_root_nodes(network)
+    while roots:
+        topological_sorted += [*roots]
 
-        for top in tops:
-            network.pop(top)
-            count_connections(top)
-        tops = get_root_nodes(network)
+        for root in roots:
+            network.pop(root)
+            count_connections(root)
+        roots = get_root_nodes(network)
     return topological_sorted
 
 

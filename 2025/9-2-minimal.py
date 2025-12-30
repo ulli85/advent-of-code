@@ -1,4 +1,3 @@
-import time
 from collections import defaultdict
 
 
@@ -36,8 +35,7 @@ def is_point_inside_polygon(xp, yp, edges):
         if (yp < y1) != (yp < y2) and xp < x1 + ((yp - y1) / (y2 - y1)) * (x2 - x1):
             cnt += 1
 
-    crossings = cnt % 2 == 1
-    return crossings
+    return cnt % 2 == 1
 
 def is_rectangle_inside_polygon(x1, y1, x2, y2):
     xmin, xmax = min(x1, x2), max(x1, x2)

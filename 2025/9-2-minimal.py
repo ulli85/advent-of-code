@@ -55,15 +55,16 @@ def is_rectangle_inside_polygon(x1, y1, x2, y2):
         return False
 
 
-    # full rectangle edge check
+    # check rectangle vertical edges
     for y in range(ymin, ymax + 1):
         for x in [xmin, xmax]:
-            if is_point_inside_polygon(x, y, EDGES) % 2 == 0:
+            if not is_point_inside_polygon(x, y, EDGES):
                 return False
 
+    # check rectangle horizontal edges
     for x in range(xmin, xmax + 1):
         for y in [ymin, ymax]:
-            if is_point_inside_polygon(x, y, EDGES) % 2 == 0:
+            if not is_point_inside_polygon(x, y, EDGES):
                 return False
     return True
 

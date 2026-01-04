@@ -79,7 +79,7 @@ class Visual:
         self.fig = plt.figure(constrained_layout=True)
         gs = self.fig.add_gridspec(
             nrows=4, ncols=3,
-            height_ratios=[1, 1, 0.3, 1]
+            height_ratios=[1, 1, 0.3, 4]
         )
 
         self.axes = []

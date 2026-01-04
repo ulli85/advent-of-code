@@ -76,19 +76,49 @@ class Visual:
         self.init_gui()
 
     def init_gui(self):
-        plt.subplots_adjust(bottom=0.25)  # make room for buttons
+        self.fig = plt.figure(constrained_layout=True)
+        gs = self.fig.add_gridspec(
+            nrows=4, ncols=3,
+            height_ratios=[1, 1, 0.3, 1]
+        )
 
-        # Button positions: [left, bottom, width, height]
-        ax_btn1 = plt.axes((0.3, 0.1, 0.15, 0.075))
-        ax_btn2 = plt.axes((0.5, 0.1, 0.15, 0.075))
-        ax_btn3 = plt.axes((0.7, 0.1, 0.15, 0.075))
+        self.axes = []
+        self.images = []
+
+        idx = 0
+        for r in range(2):
+            for c in range(3):
+                if idx >= len(self.shapes):
+                    break
+                ax = self.fig.add_subplot(gs[r, c])
+                img = ax.imshow(np.array(self.shapes[idx], dtype=np.uint8))
+                ax.set_title(f"Shape {idx}")
+                ax.set_axis_off()
+                self.axes.append(ax)
+                self.images.append(img)
+                idx += 1
+
+        ax_btn1 = self.fig.add_subplot(gs[2, 0])
+        ax_btn2 = self.fig.add_subplot(gs[2, 1])
+        ax_btn3 = self.fig.add_subplot(gs[2, 2])
+
         self.btrotate = Button(ax_btn1, 'Rotate')
         self.btflipud = Button(ax_btn2, 'Vertical f')
         self.btfliplr = Button(ax_btn3, 'Horizontal f')
+
         self.btrotate.on_clicked(self.rotate_shapes)
         self.btflipud.on_clicked(self.flip_shapes_vertically)
         self.btfliplr.on_clicked(self.flip_shapes_horizontally)
-        self.init_shapes()
+
+        ax_region = self.fig.add_subplot(gs[3, :])
+        ax_region.set_title("Region")
+        ax_region.set_axis_off()
+
+        region_data = np.zeros(
+            (self.regions[0][0], self.regions[0][1])
+        )
+
+        self.region_img = ax_region.imshow(region_data)
         plt.show()
 
     def init_shapes(self):
@@ -100,7 +130,14 @@ class Visual:
             self.axes.append(ax)
             self.images.append(img)
         # region
-        #plt.subplot
+        ax = plt.subplot(1, 1, 1)
+        ax.set_axis_off()
+        ax.set_title('Region')
+        region_data = np.empty(shape=(self.regions[0][0], self.regions[0][1]))
+        region_data.fill(0)
+        img = ax.imshow(region_data)
+        self.axes.append(ax)
+        self.images.append(img)
         plt.draw()
 
     def refresh_shapes(self):
@@ -122,8 +159,6 @@ class Visual:
         flipped_shapes = [flip_horizontally(sh) for sh in self.shapes]
         self.shapes = flipped_shapes
         self.refresh_shapes()
-
-
 
 
 lines = open("input/12.txt").read()

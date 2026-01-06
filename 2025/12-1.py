@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import matplotlib.pyplot as plt
 import numpy as np
 import re
@@ -22,19 +24,36 @@ color_map = {
 
 def parse_shapes(lines):
     res = re.findall('[.|#]+', lines)
-    default_color = color_map[0]
     shapes = []
     for i in range(0, len(res), 3):
         shape = []
-        shape_id = (i // 3) + 1
         for j in range(i, i + 3):
-            row = [default_color.copy() for _ in range(3)]
+            row = [0 for _ in range(3)]
             for ci, c in enumerate(res[j]):
                 if c == '#':
-                    row[ci] = color_map[shape_id]
+                    row[ci] = 1
             shape += [row]
         shapes += [shape]
     return shapes
+
+
+def shape_to_coords(shape):
+    s2c = []
+    for i in range(len(shape)):
+        for j in range(len(shape[0])):
+            if shape[i][j] == 1:
+                s2c += [(i, j)]
+    return tuple(s2c)
+
+
+def create_all_rotations(shapes):
+    all_rotations = defaultdict(set)
+    for i, shape in enumerate(shapes):
+        for s in [shape, flip_vertically(shape), flip_horizontally(shape)]:
+            for j in range(4):
+                shape = rotate(shape)
+                all_rotations[i].add(shape_to_coords(shape))
+    return all_rotations
 
 
 def parse_regions(lines):
@@ -164,6 +183,8 @@ class Visual:
 lines = open("input/12.txt").read()
 shapes = parse_shapes(lines)
 regions = parse_regions(lines)
+rotations = create_all_rotations(shapes)
 
+print(rotations)
 print(regions)
 Visual(shapes, regions)

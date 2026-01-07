@@ -1,4 +1,5 @@
 from collections import defaultdict
+from itertools import count
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,87 +7,138 @@ import re
 
 from matplotlib.widgets import Button
 
-# define color map
-color_map = {
-    0: np.array([255, 255, 255]),  # white
-    1: np.array([255, 0, 0]),  # red
-    2: np.array([0, 255, 0]),  # green
-    3: np.array([0, 0, 255]),  # blue
-    4: np.array([128, 0, 255]),  # purple
-    5: np.array([255, 0, 255]),  # magenta
-    6: np.array([0, 255, 255]),  # cyan
-    7: np.array([255, 128, 0]),  # orange
-    8: np.array([128, 255, 0]),  # lime green
-    9: np.array([0, 128, 255]),  # sky blue
-    10: np.array([255, 255, 0]),  # yellow
-}
+
+class Placement:
+    def __init__(self, shape_id, rotation_id, offset_col, offset_row):
+        self.shape_id = shape_id
+        self.rotation_id = rotation_id
+        self.offset_col = offset_col
+        self.offset_row = offset_row
 
 
-def parse_shapes(lines):
-    res = re.findall('[.|#]+', lines)
-    shapes = []
-    for i in range(0, len(res), 3):
-        shape = []
-        for j in range(i, i + 3):
-            row = [0 for _ in range(3)]
-            for ci, c in enumerate(res[j]):
-                if c == '#':
-                    row[ci] = 1
-            shape += [row]
-        shapes += [shape]
-    return shapes
+class DataProvider:
+    INSTANCE:'DataProvider' = None
+
+    def __init__(self):
+        if DataProvider.INSTANCE is None:
+            self.lines = open("input/12.txt").read()
+            self.shapes = self.parse_shapes()
+            self.rotations = self.create_all_rotations()
+            self.regions = self.parse_regions()
+            DataProvider.INSTANCE = self
+
+    def rotate(self, shape):
+        rotated = np.array(shape, int)
+        rotated = np.rot90(rotated)
+        return rotated.tolist()
+
+    def flip_vertically(self, shape):
+        flipped = np.array(shape, int)
+        flipped = np.flipud(flipped)
+        return flipped.tolist()
+
+    def flip_horizontally(self, shape):
+        flipped = np.array(shape, int)
+        flipped = np.fliplr(flipped)
+        return flipped.tolist()
+
+    def parse_shapes(self):
+        res = re.findall('[.|#]+', self.lines)
+        shapes = []
+        for i in range(0, len(res), 3):
+            shape = []
+            for j in range(i, i + 3):
+                row = [0 for _ in range(3)]
+                for ci, c in enumerate(res[j]):
+                    if c == '#':
+                        row[ci] = 1
+                shape += [row]
+            shapes += [shape]
+        return shapes
+
+    def shape_to_coords(self, shape):
+        s2c = []
+        for i in range(len(shape)):
+            for j in range(len(shape[0])):
+                if shape[i][j] == 1:
+                    s2c += [(i, j)]
+        return tuple(s2c)
+
+    def create_all_rotations(self):
+        all_rotations = defaultdict(list)
+        for i, shape in enumerate(self.shapes):
+            rotations = set()
+            for s in [shape, self.flip_vertically(shape), self.flip_horizontally(shape)]:
+                for j in range(4):
+                    shape = self.rotate(s)
+                    rotations.add(self.shape_to_coords(shape))
+            all_rotations[i] = list(rotations)
+        return all_rotations
+
+    def parse_regions(self):
+        regions = []
+        for size, nums in re.findall(r'(\d+x\d+): (.*)', self.lines):
+            w, h = map(int, size.split('x'))
+            values = list(map(int, nums.split()))
+            regions.append((w, h, values))
+        return regions
 
 
-def shape_to_coords(shape):
-    s2c = []
-    for i in range(len(shape)):
-        for j in range(len(shape[0])):
-            if shape[i][j] == 1:
-                s2c += [(i, j)]
-    return tuple(s2c)
+class State:
+    def __init__(self, region_id: int, placements: [Placement]):
+        self.region_id = region_id
+        self.placements = placements
 
+    def __get_region(self) -> tuple[int, int, list]:
+        return DataProvider.INSTANCE.regions[self.region_id]
 
-def create_all_rotations(shapes):
-    all_rotations = defaultdict(set)
-    for i, shape in enumerate(shapes):
-        for s in [shape, flip_vertically(shape), flip_horizontally(shape)]:
-            for j in range(4):
-                shape = rotate(shape)
-                all_rotations[i].add(shape_to_coords(shape))
-    return all_rotations
+    def add_placement(self, placement: Placement) -> 'State':
+        return State(self.region_id, self.placements + [placement])
 
+    def is_valid(self) -> bool:
+        w, h, shape2put_cnts = self.__get_region()
+        rotations = DataProvider.INSTANCE.rotations
+        occupied_coords = set()
+        for placement in self.placements:
+            row, col = rotations[placement.shape_id][placement.rotation_id]
+            row += placement.offset_row
+            col += placement.offset_col
+            if 0 > col or col >= w: return False
+            if 0 > row or row >= h: return False
+            if (col, row) in occupied_coords:
+                return False
+            occupied_coords.add((col, row))
+        return True
 
-def parse_regions(lines):
-    regions = []
-    for size, nums in re.findall(r'(\d+x\d+): (.*)', lines):
-        w, h = map(int, size.split('x'))
-        values = list(map(int, nums.split()))
-        regions.append((w, h, values))
-    return regions
+    def is_final(self) -> bool:
+        if not self.is_valid():
+            return False
 
-
-def rotate(shape):
-    rotated = np.array(shape, int)
-    rotated = np.rot90(rotated)
-    return rotated.tolist()
-
-
-def flip_vertically(shape):
-    flipped = np.array(shape, int)
-    flipped = np.flipud(flipped)
-    return flipped.tolist()
-
-
-def flip_horizontally(shape):
-    flipped = np.array(shape, int)
-    flipped = np.fliplr(flipped)
-    return flipped.tolist()
+        for shape_id, cnt in enumerate(self.__get_region()[2]):
+            if cnt > 0:
+                if len(list(filter(lambda pl: pl.shape_id == shape_id, self.placements))) < cnt:
+                    return False
+        return True
 
 
 class Visual:
-    def __init__(self, shapes, regions):
-        self.shapes = shapes
-        self.regions = regions
+    # define color map
+    color_map = {
+        0: np.array([255, 255, 255]),  # white
+        1: np.array([255, 0, 0]),  # red
+        2: np.array([0, 255, 0]),  # green
+        3: np.array([0, 0, 255]),  # blue
+        4: np.array([128, 0, 255]),  # purple
+        5: np.array([255, 0, 255]),  # magenta
+        6: np.array([0, 255, 255]),  # cyan
+        7: np.array([255, 128, 0]),  # orange
+        8: np.array([128, 255, 0]),  # lime green
+        9: np.array([0, 128, 255]),  # sky blue
+        10: np.array([255, 255, 0]),  # yellow
+    }
+
+    def __init__(self, data_provider: DataProvider):
+        self.data_provider = data_provider
         self.btrotate = None
         self.btflipud = None
         self.btfliplr = None
@@ -107,10 +159,10 @@ class Visual:
         idx = 0
         for r in range(2):
             for c in range(3):
-                if idx >= len(self.shapes):
+                if idx >= len(self.data_provider.shapes):
                     break
                 ax = self.fig.add_subplot(gs[r, c])
-                img = ax.imshow(np.array(self.shapes[idx], dtype=np.uint8))
+                img = ax.imshow(self.colorize_shape(idx, self.data_provider.shapes[idx]))
                 ax.set_title(f"Shape {idx}")
                 ax.set_axis_off()
                 self.axes.append(ax)
@@ -134,7 +186,7 @@ class Visual:
         ax_region.set_axis_off()
 
         region_data = np.zeros(
-            (self.regions[0][0], self.regions[0][1])
+            (self.data_provider.regions[0][0], self.data_provider.regions[0][1])
         )
 
         self.region_img = ax_region.imshow(region_data)
@@ -152,7 +204,7 @@ class Visual:
         ax = plt.subplot(1, 1, 1)
         ax.set_axis_off()
         ax.set_title('Region')
-        region_data = np.empty(shape=(self.regions[0][0], self.regions[0][1]))
+        region_data = np.empty(shape=(self.data_provider.regions[0][0], self.data_provider.regions[0][1]))
         region_data.fill(0)
         img = ax.imshow(region_data)
         self.axes.append(ax)
@@ -160,31 +212,36 @@ class Visual:
         plt.draw()
 
     def refresh_shapes(self):
-        for img, shape in zip(self.images, self.shapes):
-            img.set_data(np.array(shape, dtype=np.uint8))
+        for i, (img, shape) in enumerate(zip(self.images, self.data_provider.shapes)):
+            img.set_data(self.colorize_shape(i, shape))
         plt.draw()
 
     def rotate_shapes(self, event):
-        rotated_shapes = [rotate(sh) for sh in self.shapes]
-        self.shapes = rotated_shapes
+        rotated_shapes = [data_provider.rotate(sh) for sh in self.data_provider.shapes]
+        self.data_provider.shapes = rotated_shapes
         self.refresh_shapes()
 
     def flip_shapes_vertically(self, event):
-        flipped_shapes = [flip_vertically(sh) for sh in self.shapes]
-        self.shapes = flipped_shapes
+        flipped_shapes = [data_provider.flip_vertically(sh) for sh in self.data_provider.shapes]
+        self.data_provider.shapes = flipped_shapes
         self.refresh_shapes()
 
     def flip_shapes_horizontally(self, event):
-        flipped_shapes = [flip_horizontally(sh) for sh in self.shapes]
-        self.shapes = flipped_shapes
+        flipped_shapes = [data_provider.flip_horizontally(sh) for sh in self.data_provider.shapes]
+        self.data_provider.shapes = flipped_shapes
         self.refresh_shapes()
 
+    def colorize_shape(self, idx, shape):
+        colored_shape = []
+        for _ in range(len(shape)):
+            colored_shape += [[Visual.color_map[0].copy() for _ in range(len(shape[0]))]]
 
-lines = open("input/12.txt").read()
-shapes = parse_shapes(lines)
-regions = parse_regions(lines)
-rotations = create_all_rotations(shapes)
+        for row in range(len(shape)):
+            for col in range(len(shape[0])):
+                if shape[row][col] == 1:
+                    colored_shape[row][col] = Visual.color_map[idx + 1]
+        return np.array(colored_shape)
 
-print(rotations)
-print(regions)
-Visual(shapes, regions)
+
+data_provider = DataProvider()
+Visual(data_provider)
